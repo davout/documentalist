@@ -1,0 +1,3 @@
+= Officer
+
+Rails gem for talking to OpenOffice.
