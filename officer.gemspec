@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{Ruby interface that talks to OpenOffice}
   s.email = %q{david.francois@webflows.fr}
   s.extra_rdoc_files = ["README.rdoc", "lib/officer.rb"]
-  s.files = ["README.rdoc", "Rakefile", "lib/officer.rb", "Manifest", "officer.gemspec"]
+  s.files = ["README.rdoc", "Rakefile", "lib/officer.rb", "Manifest", "officer.gemspec", "init.rb", "rails/init.rb"]
   s.homepage = %q{http://github.com/davout/officer}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Officer", "--main", "README.rdoc"]
   s.require_paths = ["lib"]

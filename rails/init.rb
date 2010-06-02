@@ -1,1 +1,1 @@
-puts "initializing rails bitch!"
+require 'officer'

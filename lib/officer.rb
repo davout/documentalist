@@ -1,8 +1,5 @@
 module Officer
-  def self.included(base)
-    base.extend ClassMethods
-  end
-
-  module ClassMethods
-  end
+  def officer_merge(document, data)
+    raise "Merging #{data} into #{document} isn't implemented yet!"
+  end  
 end  
