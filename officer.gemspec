@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Ruby interface that talks to OpenOffice}
 
+  s.add_dependency('zip', '>= 2.0.2')
+
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
