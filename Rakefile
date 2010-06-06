@@ -8,7 +8,8 @@ Echoe.new('officer', '0.1.0') do |p|
   p.author          = "David FRANCOIS"
   p.email           = "david.francois@webflows.fr"
   p.ignore_pattern  = ["tmp/*", "script/*"]
-  p.test_pattern    = "test/**/*_test.rb"
+  p.test_pattern    = "test/**/*.rb"
+  p.development_dependencies = ["zip >= 2.0.2"]
   p.runtime_dependencies = ["zip >= 2.0.2"]
 end  
 

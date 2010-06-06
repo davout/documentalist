@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{Ruby interface that talks to OpenOffice}
   s.email = %q{david.francois@webflows.fr}
   s.extra_rdoc_files = ["README.rdoc", "lib/officer.rb"]
-  s.files = ["README.rdoc", "Rakefile", "init.rb", "lib/officer.rb", "officer.gemspec", "rails/init.rb", "Manifest", "test/officer_test.rb"]
+  s.files = ["README.rdoc", "Rakefile", "init.rb", "lib/officer.rb", "officer.gemspec", "rails/init.rb", "test/fixtures/fixture.odt", "test/officer_test.rb", "Manifest"]
   s.homepage = %q{http://github.com/davout/officer}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Officer", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
@@ -25,10 +25,13 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<zip>, [">= 0", "= 2.0.2"])
+      s.add_development_dependency(%q<zip>, [">= 0", "= 2.0.2"])
     else
+      s.add_dependency(%q<zip>, [">= 0", "= 2.0.2"])
       s.add_dependency(%q<zip>, [">= 0", "= 2.0.2"])
     end
   else
+    s.add_dependency(%q<zip>, [">= 0", "= 2.0.2"])
     s.add_dependency(%q<zip>, [">= 0", "= 2.0.2"])
   end
 end

@@ -3,12 +3,23 @@ require 'officer'
 
 class OfficerTest < Test::Unit::TestCase
   def test_merge
-    template = "<%= @instance_var %><%= 1.upto(3).map{ |n| n.to_s }.join %>{{variable}}>"
+    template = "<%= @var1 %><%= 1.upto(3).map{ |n| n.to_s }.join %><%= @var2 %>"
 
     @instance_var = "test"
 
-    merged = Officer.merge(template, {:variable => "working?"})
+    merged = Officer.merge(template, :locals => {
+        :var1 => "test",
+        :var2 => "working?"
+      }
+    )
 
     assert_equal "test123working?", merged, "Merge wasn't performed correctly"
+  end
+
+  def test_read_zipped_odt
+    contents = Officer.get_contents(File.join(File.dirname(__FILE__), "fixtures/fixture.odt"))
+
+    assert_match /Hello/, contents
+    assert_match /thing/, contents
   end
 end
