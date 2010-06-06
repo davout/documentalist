@@ -24,4 +24,8 @@ class OfficerTest < Test::Unit::TestCase
     assert !(contents =~ /%&gt;/)
     assert !(contents =~ /&lt;%=/)
   end
+
+  def test_odt_merge
+    Officer.merge_template("/home/david/fixture.odt", :locals => {:thing => "world"}, :to => "/home/david/fixture2.odt")
+  end
 end

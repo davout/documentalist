@@ -22,14 +22,21 @@ module Officer
   end
 
   def self.merge_template(template, options = {})
-    merged = merge(get_contents(odt_file), :locals => options[:locals])
-    File.open("/tmp/officer.tmp", 'w') {|f| f.write(merged) }
-    if options[:to]
-      system("cp #{template} #{options[:to]}")
+    tmp = Tempfile.new("officer")
+    tmp.write(merge(get_contents(template), :locals => options[:locals]))
+
+    tmp.close
+    tmp.open
+
+    system("cp #{template} #{options[:to]}") if options[:to]
+    destination = options[:to] || template
+      
+    Zip::ZipFile.open(destination) do |zip|
+      zip.replace("content.xml", tmp.path)
+      zip.commit
+
     end
 
-    destination = options[:to] || template
-
-    Zip::ZipFile.open(odt_file) { |zip| zip.add("content.xml", destination) }
+    tmp.close!
   end
 end  
