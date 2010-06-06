@@ -1,5 +1,7 @@
+require 'erb'
+
 module Officer
-  def officer_merge(document, data)
-    raise "Merging #{data} into #{document} isn't implemented yet!"
-  end  
+  def self.merge(str, data = {})
+    ERB.new(str).result
+  end
 end  
