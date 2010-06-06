@@ -2,6 +2,8 @@ require 'test/unit'
 require 'officer'
 
 class OfficerTest < Test::Unit::TestCase
+  @@odt_fixture = File.join(File.dirname(__FILE__), "fixtures/fixture.odt")
+
   def test_merge
     template = "<%= @var1 %><%= 1.upto(3).map{ |n| n.to_s }.join %><%= @var2 %>"
 
@@ -17,7 +19,7 @@ class OfficerTest < Test::Unit::TestCase
   end
 
   def test_read_zipped_odt
-    contents = Officer.get_contents(File.join(File.dirname(__FILE__), "fixtures/fixture.odt"))
+    contents = Officer.get_contents(@@odt_fixture)
 
     assert_match /Hello/, contents
     assert_match /thing/, contents
