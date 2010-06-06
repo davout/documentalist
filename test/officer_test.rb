@@ -7,8 +7,6 @@ class OfficerTest < Test::Unit::TestCase
   def test_merge
     template = "<%= @var1 %><%= 1.upto(3).map{ |n| n.to_s }.join %><%= @var2 %>"
 
-    @instance_var = "test"
-
     merged = Officer.merge(template, :locals => {
         :var1 => "test",
         :var2 => "working?"
@@ -23,5 +21,7 @@ class OfficerTest < Test::Unit::TestCase
 
     assert_match /Hello/, contents
     assert_match /thing/, contents
+    assert !(contents =~ /%&gt;/)
+    assert !(contents =~ /&lt;%=/)
   end
 end

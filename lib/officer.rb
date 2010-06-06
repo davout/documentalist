@@ -16,6 +16,20 @@ module Officer
   end
 
   def self.get_contents(odt_file)
-    Zip::ZipFile.open(odt_file) { |zip| zip.read("content.xml") }
+    contents = ""
+    Zip::ZipFile.open(odt_file) { |zip| contents = zip.read("content.xml") }
+    contents.gsub("&lt;%", "<%").gsub("%&gt;", "%>")
+  end
+
+  def self.merge_template(template, options = {})
+    merged = merge(get_contents(odt_file), :locals => options[:locals])
+    File.open("/tmp/officer.tmp", 'w') {|f| f.write(merged) }
+    if options[:to]
+      system("cp #{template} #{options[:to]}")
+    end
+
+    destination = options[:to] || template
+
+    Zip::ZipFile.open(odt_file) { |zip| zip.add("content.xml", destination) }
   end
 end  
