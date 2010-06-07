@@ -10,14 +10,14 @@ Gem::Specification.new do |s|
   s.description = %q{Ruby interface that talks to OpenOffice}
   s.email = %q{david.francois@webflows.fr}
   s.extra_rdoc_files = ["README.rdoc", "lib/officer.rb"]
-  s.files = ["README.rdoc", "Rakefile", "init.rb", "lib/officer.rb", "officer.gemspec", "rails/init.rb", "test/fixtures/fixture.odt", "test/officer_test.rb", "Manifest"]
+  s.files = ["README.rdoc", "Rakefile", "init.rb", "lib/officer.rb", "officer.gemspec", "rails/init.rb", "test/fixtures/fixture.odt", "test/officer_test.rb", "Manifest", "test/open_office_test.rb"]
   s.homepage = %q{http://github.com/davout/officer}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Officer", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{officer}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Ruby interface that talks to OpenOffice}
-  s.test_files = ["test/officer_test.rb"]
+  s.test_files = ["test/officer_test.rb", "test/open_office_test.rb"]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
