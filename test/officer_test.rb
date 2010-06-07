@@ -26,6 +26,15 @@ class OfficerTest < Test::Unit::TestCase
   end
 
   def test_odt_merge
-    Officer.merge_template("/home/david/fixture.odt", :locals => {:thing => "world"}, :to => "/home/david/fixture2.odt")
+    template = "#{File.join(File.dirname(__FILE__), "fixtures/fixture.odt")}"
+    result = "#{File.join(File.dirname(__FILE__), "fixtures/result.odt")}"
+
+    Officer.merge_template(template,
+      :locals => {:thing => "world"},
+      :to => result
+    )
+    
+    assert /world/, Officer.get_contents(result)
+    File.delete(result)
   end
 end

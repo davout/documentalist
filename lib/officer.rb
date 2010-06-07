@@ -23,20 +23,18 @@ module Officer
 
   def self.merge_template(template, options = {})
     tmp = Tempfile.new("officer")
+    
     tmp.write(merge(get_contents(template), :locals => options[:locals]))
-
     tmp.close
-    tmp.open
 
-    system("cp #{template} #{options[:to]}") if options[:to]
+    File.copy(template, options[:to]) if options[:to]
     destination = options[:to] || template
       
     Zip::ZipFile.open(destination) do |zip|
       zip.replace("content.xml", tmp.path)
       zip.commit
-
     end
 
-    tmp.close!
+    tmp.unlink
   end
 end  
