@@ -5,7 +5,7 @@ require 'tmpdir'
 require 'zip/zip'
 require 'open_office/server'
 
-module Officer
+module Documentalist
   def self.merge(str, options = {})
     locals = options[:locals]
 
