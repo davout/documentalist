@@ -1,4 +1,5 @@
 pkg
 doc
 Manifest
+.specification
 *.gem
