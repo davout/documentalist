@@ -1,16 +1,6 @@
-test:
-  conversions_path: /RAILS_ROOT/tmp/conversions # nil => converted file is created next to the original
-  open_office:
-    python_path: /usr/bin/python
-    open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
-    bridge: JOD #PYOD
-    max_cpu: 80  #percent
-    server_start_delay: 10 #seconds
-    conversion_tries: 3
-    conversion_time_delay: 10 #seconds
-
 development:
-  conversions_path: /RAILS_ROOT/tmp/conversions # nil => converted file is created next to the original
+  # TODO : Replace me with temp path
+  conversions_path: toto
   open_office:
     python_path: /usr/bin/python
     open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
@@ -20,8 +10,9 @@ development:
     conversion_tries: 3
     conversion_time_delay: 10 #seconds
 
-staging:
-  conversions_path: /RAILS_ROOT/tmp/conversions # nil => converted file is created next to the original
+test:
+  # TODO : Replace me with temp path
+  conversions_path: toto
   open_office:
     python_path: /usr/bin/python
     open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
@@ -32,7 +23,8 @@ staging:
     conversion_time_delay: 10 #seconds
 
 production:
-  conversions_path: /RAILS_ROOT/tmp/conversions # nil => converted file is created next to the original
+  # TODO : Replace me with temp path
+  conversions_path: toto
   open_office:
     python_path: /usr/bin/python
     open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
