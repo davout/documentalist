@@ -13,4 +13,4 @@ Echoe.new('documentalist', '0.1.0') do |p|
   p.runtime_dependencies = ['zip >=2.0.2']
 end  
 
-Dir["#{File.dirname(__FILE__)}/tasks/*.rake"].sort.each { |ext| load ext }
+#Dir["#{File.dirname(__FILE__)}/lib/tasks/*.rake"].sort.each { |ext| load ext }
