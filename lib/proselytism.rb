@@ -1,12 +1,12 @@
 require 'yaml'
 
-module Proselytism
+module Documentalist
   
-  CONFIG = ( YAML::load(File.open( RAILS_ROOT + "/config/proselytism_config.yml")) || {} )[ ENV['RAILS_ENV'] ] || { 'open_office' => {} }
+  CONFIG = ( YAML::load(File.open( File.join(RAILS_ROOT, "config", "documentalist.yml")) || {} )[ ENV['RAILS_ENV'] ] || { 'open_office' => {} }
 
-  CONVERSIONS_PATH = CONFIG['conversions_path'].to_s.gsub(/\/*RAILS_ROOT\s*/,RAILS_ROOT)
+  CONVERSIONS_PATH = CONFIG['conversions_path'].to_s.gsub(/\/*RAILS_ROOT\s*/, RAILS_ROOT)
 
-  LOG_PATH = RAILS_ROOT + "/log/proselytism.log"
+  LOG_PATH = RAILS_ROOT + "/log/documentalist.log"
 
   module Servers
     class OpenOffice
@@ -31,7 +31,7 @@ module Proselytism
         end
       end
 
-      # HACK pour contourner un comportement �trange d'OpenOffice, normalement les enregistrements
+      # HACK pour contourner un comportement étrange d'OpenOffice, normalement les enregistrements
       # se font en UTF-8, mais parfois pour une raison obscure les fichiers texte sont en ISO-8859-1
       # donc on rajoute un test pour re-convertir dans l'encodage qu'on attend
       def self.convert_txt_to_utf8(file_path)
