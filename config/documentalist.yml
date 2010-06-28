@@ -1,35 +1,42 @@
 development:
-  # TODO : Replace me with temp path
-  conversions_path: toto
   open_office:
+    # Path to the puthon binary
     python_path: /usr/bin/python
-    open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
-    bridge: JOD #PYOD
-    max_cpu: 80  #percent
-    server_start_delay: 10 #seconds
+
+    # Path to the OpenOpffice binary
+    open_office_path: /usr/bin/soffice
+
+    # Select desired bridge between PYOD and JOD
+    bridge: JOD
+
+    # Maximum allowed CPU usage before the process is considered stalled
+    max_cpu: 80
+
+    # OpenOffice server allowed startup time (seconds)
+    server_start_delay: 5
+
+    # Conversion tries before giving up
     conversion_tries: 3
-    conversion_time_delay: 10 #seconds
+
+    # Maximum allowed time for converting a document
+    conversion_time_delay: 6
 
 test:
-  # TODO : Replace me with temp path
-  conversions_path: toto
   open_office:
     python_path: /usr/bin/python
-    open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
-    bridge: JOD #PYOD
-    max_cpu: 80  #percent
-    server_start_delay: 10 #seconds
+    open_office_path: /usr/bin/soffice
+    bridge: JOD
+    max_cpu: 80
+    server_start_delay: 5
     conversion_tries: 3
-    conversion_time_delay: 10 #seconds
+    conversion_time_delay: 6
 
 production:
-  # TODO : Replace me with temp path
-  conversions_path: toto
   open_office:
     python_path: /usr/bin/python
-    open_office_path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice #/usr/bin/soffice
-    bridge: JOD #PYOD
-    max_cpu: 80  #percent
-    server_start_delay: 10 #seconds
+    open_office_path: /usr/bin/soffice
+    bridge: JOD
+    max_cpu: 80
+    server_start_delay: 5
     conversion_tries: 3
-    conversion_time_delay: 10 #seconds
+    conversion_time_delay: 6
