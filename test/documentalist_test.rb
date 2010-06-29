@@ -1,6 +1,9 @@
 require 'test_helper'
+require 'system_timer'
 
 class DocumentalistTest < Test::Unit::TestCase
+  include FlexMock::TestCase
+
   # Test the custom symbolize method used as a replacement for the Active Support version
   def test_symbolize
     hash = { "a" => "b",
@@ -21,9 +24,7 @@ class DocumentalistTest < Test::Unit::TestCase
   end
   
   def test_timeout_uses_system_timeout
-    assert false, "Implement me"
-
-    # timeout should work with long system call, only if system timer is used
-    # tho, it should be checked moar in case default timeout handles it well
+    flexmock(SystemTimer).should_receive(:timeout).once
+    Documentalist.timeout(0.1) { }
   end
 end

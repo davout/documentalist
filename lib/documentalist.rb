@@ -20,8 +20,8 @@ module Documentalist
     NetPBM => {:ppm => [:jpg, :jpeg]},
     PdfTools => {:pdf => :txt},
     
-    # Find a better pattern to pick backend, this one smells
-    #WkHTML2PDF => {[:html, :htm] => :pdf}
+    # Find a better pattern to pick backend, this one smells pretty bad
+    # WkHTML2PDF => {[:html, :htm] => :pdf}
   }
 
   # Finds the relevant server to perform the conversion
@@ -36,7 +36,7 @@ module Documentalist
     raise "#{file_name} does not exist !" unless File.exist?(file_name)
 
     # Convert to plain text by default
-    options[:to] = options[:to].blank? ? :txt : options[:to].to_sym
+    options[:to] = (options[:to].nil? or options[:to].empty?) ? :txt : options[:to].to_sym
 
     options[:from] = File.extname file_name
 
@@ -60,6 +60,7 @@ module Documentalist
 
   def self.extract_images(file)
     temp_dir = File.join(CONVERSIONS_PATH, (Time.new.to_f*100_000).to_i.to_s)
+    
     if File.extname(file) == '.pdf'
       temp_file = File.join(temp_dir, File.basename(file))
 
@@ -67,7 +68,7 @@ module Documentalist
       system "cd #{temp_dir} && pdfimages #{temp_file} 'img'"
 
       Dir.glob(File.join(temp_dir, "*.ppm")).each do |ppm_image|
-        system("cd #{temp_dir} && ppmtojpeg #{ppm_image} > #{ppm_image.gsub(/ppm$/, "jpg")}")
+        Documentalist.convert(ppm_image, :to => :jpeg)
       end
     else
       convert file, :to => :html, :directory => temp_dir

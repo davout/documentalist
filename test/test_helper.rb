@@ -1,4 +1,6 @@
+require 'rubygems'
 require 'test/unit'
+require 'flexmock/test_unit'
 require 'documentalist'
 
 def fixture_001

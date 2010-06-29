@@ -1,8 +1,11 @@
 require 'test_helper'
+require 'tmpdir'
 
 class RailsIntegrationTest < Test::Unit::TestCase
   def test_config_file_gets_copied_and_loaded
-    require 'tmpdir'
+    # Undefine Documentalist so we don't get annoying warnings about constant redefinition
+    # when redefining Documentalist::BACKENDS when requiring it a second time
+    Object.send(:remove_const, :Documentalist)
 
     # Ensure that RAILS_ROOT is undefined
     assert !Object.const_defined?(:RAILS_ROOT), "RAILS_ROOT constant is defined, I won't go further"
@@ -18,7 +21,6 @@ class RailsIntegrationTest < Test::Unit::TestCase
     require File.join(File.dirname(__FILE__), %w{.. rails init})
 
     # Check that the configuration got loaded up properly
-    assert Documentalist.config.is_a? Hash
     assert_equal Documentalist.config[:open_office][:python_path], '/usr/bin/python'
 
     # Delete fake RAILS_ROOT
