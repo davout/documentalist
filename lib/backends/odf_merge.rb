@@ -1,11 +1,16 @@
 require 'erb'
-require 'fileutils'
+#require 'fileutils'
 require 'tmpdir'
 require 'zip/zip'
 require 'backends/open_office/server'
 
-# This module provides open document merge functionality
 module Documentalist
+  # Merge an ODF document with an arbitrary hash of data
+  def self.odf_merge(template, options = {})
+    ODFMerge.merge_template(template, options)
+  end
+
+  # This module provides open document merge functionality
   module ODFMerge
     def self.merge_string(string, options = {})
       locals = options[:locals]
@@ -28,7 +33,7 @@ module Documentalist
     def self.merge_template(template, options = {})
       # Get template contents
       tmp_contents= Tempfile.new("officer-contents")
-      tmp_contents.write(merge(get_contents(template), :locals => options[:locals]))
+      tmp_contents.write(merge_string(get_contents(template), :locals => options[:locals]))
       tmp_contents.close
 
       # Copy the template so we can merge the data into the copy

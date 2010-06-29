@@ -15,33 +15,29 @@ class ODFMergeTest < Test::Unit::TestCase
 
     assert_equal "test123working?", merged, "Merge wasn't performed correctly"
   end
-#
-#  def test_read_zipped_odt
-#    contents = Documentalist.get_contents(@@odt_fixture)
-#
-#    assert_match /Hello/, contents
-#    assert_match /thing/, contents
-#    assert !(contents =~ /%&gt;/)
-#    assert !(contents =~ /&lt;%=/)
-#  end
-#
-#  def test_odt_merge
-#    template = "#{File.join(File.dirname(__FILE__), "fixtures/fixture.odt")}"
-#    result = "#{File.join(File.dirname(__FILE__), "fixtures/result.odt")}"
-#
-#    Documentalist.merge_template(template,
-#      :locals => {:thing => "world"},
-#      :to => result
-#    )
-#
-#    assert /world/, Documentalist.get_contents(result)
-#    File.delete(result)
-#  end
-#
-#  def test_timeout_uses_system_timeout
-#    assert false, "Implement me"
-#
-#    # timeout should work with long system call, only if system timer is used
-#    # tho, it should be checked moar in case default timeout handles it well
-#  end
+
+  # Tests that the ODFMerge backend correctly extracts the contents.xml contents
+  # of an ODF document
+  def test_extracts_contents_from_odf_file
+    contents = Documentalist::ODFMerge.get_contents(@@odf_file)
+
+    assert_match /Hello/, contents
+    assert_match /thing/, contents
+    assert !(contents =~ /%&gt;/)
+    assert !(contents =~ /&lt;%=/)
+  end
+
+  # Tests that a merge is correctly performed with an ODF template
+  def test_odf_merge
+    result = File.join(Dir.tmpdir, "#{(rand * 10 ** 9).to_i}.odt")
+
+    Documentalist.odf_merge @@odf_file,
+      :locals => {:thing => "world"},
+      :to => result
+
+    assert /world/, Documentalist::ODFMerge.get_contents(result)
+
+    FileUtils.rm result
+    assert !File.exists?(result), "Oops, we haven't cleaned up our mess..."
+  end
 end
