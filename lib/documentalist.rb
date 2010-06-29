@@ -1,3 +1,10 @@
+require 'rubygems'
+
+# Require all backends
+Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
+  require backend
+end
+
 module Documentalist
   def self.config
     @@config || {}
@@ -8,6 +15,9 @@ module Documentalist
     @@config = symbolize hash
   end
 
+  private
+
+  # Returns a new hash with recursively symbolized keys
   def self.symbolize(hash)
     hash.each_key do |key|
       hash[key.to_sym] = hash.delete key

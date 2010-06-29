@@ -7,7 +7,7 @@ require 'backends/open_office/server'
 # This module provides open document merge functionality
 module Documentalist
   module ODFMerge
-    def self.merge(str, options = {})
+    def self.merge_string(string, options = {})
       locals = options[:locals]
 
       if locals and locals.is_a? Hash
@@ -16,7 +16,7 @@ module Documentalist
         end
       end
 
-      ERB.new(str).result(binding)
+      ERB.new(string).result(binding)
     end
 
     def self.get_contents(odt_file)
