@@ -1,8 +1,6 @@
 require 'erb'
-#require 'fileutils'
 require 'tmpdir'
 require 'zip/zip'
-require 'backends/open_office/server'
 
 module Documentalist
   # Merge an ODF document with an arbitrary hash of data
@@ -25,7 +23,7 @@ module Documentalist
     end
 
     def self.get_contents(odt_file)
-      contents = ""
+      contents = String.new
       Zip::ZipFile.open(odt_file) { |zip| contents = zip.read("content.xml") }
       contents.gsub("&lt;%", "<%").gsub("%&gt;", "%>")
     end
@@ -54,17 +52,13 @@ module Documentalist
         if File.extname(options[:to]) == File.extname(template)
           FileUtils.mv(tmp_merged_template, options[:to])
         else
-          OpenOffice::Server.convert(tmp_merged_template, options[:to])
+          Documentalist.convert(tmp_merged_template, options[:to])
           FileUtils.rm(tmp_merged_template)
         end
       else
         FileUtils.rm(template)
         FileUtils.mv(tmp_merged_template, template)
       end
-    end
-
-    def self.convert(from, to)
-      Documentalist::OpenOffice.convert(from, :to => to)
     end
   end
 end

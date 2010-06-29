@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class ODFMergeTest < Test::Unit::TestCase
-  @@odf_file = File.join(File.dirname(__FILE__), "fixtures/fixture_001.odt")
-
   # Tests that an arbitrary hash of data gets correctly merged into a string template
   def test_merge
     template = "<%= @var1 %><%= 1.upto(3).map{ |n| n.to_s }.join %><%= @var2 %>"
@@ -19,7 +17,7 @@ class ODFMergeTest < Test::Unit::TestCase
   # Tests that the ODFMerge backend correctly extracts the contents.xml contents
   # of an ODF document
   def test_extracts_contents_from_odf_file
-    contents = Documentalist::ODFMerge.get_contents(@@odf_file)
+    contents = Documentalist::ODFMerge.get_contents fixture_001
 
     assert_match /Hello/, contents
     assert_match /thing/, contents
@@ -31,7 +29,7 @@ class ODFMergeTest < Test::Unit::TestCase
   def test_odf_merge
     result = File.join(Dir.tmpdir, "#{(rand * 10 ** 9).to_i}.odt")
 
-    Documentalist.odf_merge @@odf_file,
+    Documentalist.odf_merge fixture_001,
       :locals => {:thing => "world"},
       :to => result
 
@@ -46,7 +44,7 @@ class ODFMergeTest < Test::Unit::TestCase
   def test_odf_merge_and_convert
     result = File.join(Dir.tmpdir, "#{(rand * 10 ** 9).to_i}.pdf")
 
-    Documentalist.odf_merge @@odf_file,
+    Documentalist.odf_merge fixture_001,
       :locals => {:thing => "world"},
       :to => result
 
