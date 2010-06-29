@@ -64,7 +64,7 @@ module Documentalist
     end
 
     def self.convert(from, to)
-      OpenOffice::Server.convert(from, :to => to)
+      Documentalist::OpenOffice.convert(from, :to => to)
     end
   end
 end

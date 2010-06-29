@@ -40,4 +40,19 @@ class ODFMergeTest < Test::Unit::TestCase
     FileUtils.rm result
     assert !File.exists?(result), "Oops, we haven't cleaned up our mess..."
   end
+
+  # Tests that an ODF template can be merged and then converted to another format
+  # using the OpenOffice backend
+  def test_odf_merge_and_convert
+    result = File.join(Dir.tmpdir, "#{(rand * 10 ** 9).to_i}.pdf")
+
+    Documentalist.odf_merge @@odf_file,
+      :locals => {:thing => "world"},
+      :to => result
+
+    assert File.exists?(result), "Seems like there is no merged result"
+
+    FileUtils.rm result
+    assert !File.exists?(result), "Oops, we haven't cleaned up our mess..."
+  end
 end
