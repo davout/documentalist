@@ -15,6 +15,11 @@ module Documentalist
     @@config = symbolize hash
   end
 
+  # Dispatches the different conversion requests to the different backends
+  def self.convert(from, options={})
+
+  end
+
   private
 
   # Returns a new hash with recursively symbolized keys
