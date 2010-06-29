@@ -1,5 +1,30 @@
 module Documentalist
   module OpenOffice
+    # Converts documents
+    def self.convert(origin, options)
+      # See how to make OpenOffice startup as smooth as possible and not on first conversion
+      # OO auto-start option if in Rails app ?
+      Server.ensure_available
+
+      Documentalist.timeout(CONVERSION_TIME_DELAY, :attempts => CONVERSION_TRIES) do
+        if BRIDGE == 'JOD'
+          system("java -jar #{JOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
+        elsif BRIDGE == 'PYOD'
+          system("#{PYTHON_PATH} #{PYOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
+        end
+        self.convert_txt_to_utf8(options[:destination]) if options[:to] == :txt
+        options[:destination]
+      end
+    end
+
+    # HACK : convert ISO-8859-1 files back to UTF-8 when OpenOffice messes up and
+    # outputs the wrong encoding
+    def self.convert_txt_to_utf8(file_path)
+      if `file #{file_path}` =~ /ISO/
+        system("iconv --from-code ISO-8859-1 --to-code UTF-8 #{file_path} > tmp_iconv.txt && mv tmp_iconv.txt #{file_path}")
+      end
+    end
+
     module Server
       # Is OpenOffice server running?
       def self.running?

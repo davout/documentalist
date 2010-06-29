@@ -2,8 +2,8 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('documentalist', '0.1.0') do |p|
-  p.description     = "Ruby interface that talks to OpenOffice"
+Echoe.new('documentalist', '0.1.1-unstable') do |p|
+  p.description     = "Smooth document management experience"
   p.url             = "http://github.com/davout/documentalist"
   p.author          = "David FRANCOIS"
   p.email           = "david.francois@webflows.fr"
@@ -17,4 +17,5 @@ Echoe.new('documentalist', '0.1.0') do |p|
   # pgrep
   # ps
   # grep
-end  
+  # file
+end

@@ -7,7 +7,7 @@ module Documentalist
       if system("pdftotext #{origin} #{options[:destination]} > /dev/null 2>&1")
         options[:destination]
       else
-        raise "PdfTools a echoué"
+        raise "PdfTools failed"
       end
     end
   end

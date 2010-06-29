@@ -15,6 +15,22 @@ module Documentalist
     @@config = symbolize hash
   end
 
+  BACKENDS = {
+    OpenOffice => {[:odt, :doc, :rtf, :docx, :txt, :html, :htm, :wps] => [:odt, :doc, :rtf, :pdf, :txt, :html, :htm, :wps]},
+    NetPBM => {:ppm => [:jpg, :jpeg]},
+    PdfTools => {:pdf => :txt},
+    
+    # Find a better pattern to pick backend, this one smells
+    #WkHTML2PDF => {[:html, :htm] => :pdf}
+  }
+
+  # Finds the relevant server to perform the conversion
+  def self.server_for_conversion(origin, destination)
+    Servers::CONVERTERS.detect do |s, conversions|
+      conversions.keys.flatten.include?(origin) and conversions.values.flatten.include?(destination)
+    end.to_a.first
+  end
+
   # Takes all conversion requests and dispatches them appropriately
   def self.convert(file_name, options={})
     raise "#{file_name} does not exist !" unless File.exist?(file_name)
@@ -29,6 +45,38 @@ module Documentalist
 
     yield(converted) if block_given?
     converted
+  end
+
+  def self.extract_text(file)
+    converted = convert(file, :to => :txt)
+    if converted and File.exist?(converted)
+      text = File.open(converted).read.toutf8
+      FileUtils.rm(converted)
+
+      yield(extracted_text) if block_given?
+      text
+    end
+  end
+
+  def self.extract_images(file)
+    temp_dir = File.join(CONVERSIONS_PATH, (Time.new.to_f*100_000).to_i.to_s)
+    if File.extname(file) == '.pdf'
+      temp_file = File.join(temp_dir, File.basename(file))
+
+      system "mkdir #{temp_dir} && cp #{file} #{temp_file}"
+      system "cd #{temp_dir} && pdfimages #{temp_file} 'img'"
+
+      Dir.glob(File.join(temp_dir, "*.ppm")).each do |ppm_image|
+        system("cd #{temp_dir} && ppmtojpeg #{ppm_image} > #{ppm_image.gsub(/ppm$/, "jpg")}")
+      end
+    else
+      convert file, :to => :html, :directory => temp_dir
+    end
+
+    image_file_names = Dir.glob(File.join(temp_dir, "*.{jpg,jpeg,bmp,tif,tiff,gif,png}"))
+
+    yield(image_file_names) if block_given?
+    image_file_names
   end
 
   # Runs a block with a system-enforced timeout and optionally retry with an
