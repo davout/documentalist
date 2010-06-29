@@ -1,8 +1,9 @@
-require 'test/unit'
-require 'tmpdir'
+require 'test_helper'
 
 class RailsIntegrationTest < Test::Unit::TestCase
   def test_config_file_gets_copied_and_loaded
+    require 'tmpdir'
+
     # Ensure that RAILS_ROOT is undefined
     assert !Object.const_defined?(:RAILS_ROOT), "RAILS_ROOT constant is defined, I won't go further"
 
