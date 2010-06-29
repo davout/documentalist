@@ -1,4 +1,5 @@
 require 'yaml'
+require 'system_timer'
 
 module Documentalist
   
@@ -10,8 +11,6 @@ module Documentalist
 
   module Servers
     class OpenOffice
-      require 'timeout'
-
       PYOD_CONVERTER_PATH = File.dirname(__FILE__) + '/odconverters/pyodconverter.py'
 
       JOD_CONVERTER_PATH = File.dirname(__FILE__) + '/odconverters/jodconverter-2.2.2/lib/jodconverter-cli-2.2.2.jar'
@@ -20,7 +19,7 @@ module Documentalist
 
       # Converts documents
       def self.convert(origin, options)
-        timeout(CONVERSION_TIME_DELAY, :attempts => CONVERSION_TRIES) do
+        Documentalist.timeout(CONVERSION_TIME_DELAY, :attempts => CONVERSION_TRIES) do
           if BRIDGE == 'JOD'
             system("java -jar #{JOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
           elsif BRIDGE == 'PYOD'
@@ -58,7 +57,7 @@ module Documentalist
         raise "Already running!" if running?
         system("#{OPEN_OFFICE_PATH} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault >> #{LOG_PATH} 2>&1 &")
         begin
-           Timeout::timeout(3) do
+          SystemTimer.timeout(3) do
             while !running?
               print "."
             end
@@ -78,7 +77,7 @@ module Documentalist
         raise "Not running!" unless running?
 
         begin
-          Timeout::timeout(3) do
+          SystemTimer.timeout(3) do
             while(running?)
               system("pkill -9 office")
             end
@@ -116,7 +115,7 @@ module Documentalist
           attempts = options[:attempts] || 1
           begin
             ensure_available
-            Timeout::timeout(max_time) do
+            SystemTimer.timeout(max_time) do
               yield
             end
           rescue Timeout::Error

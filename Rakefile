@@ -10,7 +10,5 @@ Echoe.new('documentalist', '0.1.0') do |p|
   p.ignore_pattern  = ["tmp/*", "script/*"]
   p.test_pattern    = "test/**/*.rb"
   p.development_dependencies = []
-  p.runtime_dependencies = ['zip >=2.0.2']
+  p.runtime_dependencies = ['zip >=2.0.2', 'SystemTimer >=1.2']
 end  
-
-#Dir["#{File.dirname(__FILE__)}/lib/tasks/*.rake"].sort.each { |ext| load ext }

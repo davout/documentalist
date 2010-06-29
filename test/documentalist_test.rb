@@ -37,4 +37,11 @@ class DocumentalistTest < Test::Unit::TestCase
     assert /world/, Documentalist.get_contents(result)
     File.delete(result)
   end
+
+  def test_timeout_uses_system_timeout
+    assert false, "Implement me"
+
+    # timeout should work with long system call, only if system timer is used
+    # tho, it should be checked moar in case default timeout handles it well
+  end
 end

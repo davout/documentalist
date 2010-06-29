@@ -1,9 +1,10 @@
-require 'timeout'
+require 'system_timer'
 require 'tmpdir'
 
 module OpenOffice
   module Server
     # Path to the Python executable
+    # TODO : Eww, use config instead
     PYTHON_PATH = "/usr/bin/python"
 
     # Server can convert from the following file formats
@@ -13,6 +14,7 @@ module OpenOffice
     CONVERT_TO = [:odt, :doc, :rtf, :pdf, :txt, :html, :htm, :wps]
 
     # Python conversion script path
+    # TODO : Wrong
     PY_OD_CONVERTER = File.join(File.dirname(__FILE__), "../DocumentConverter.py")
 
     # Maximum allowed CPU usage for an OpenOffice process
@@ -22,6 +24,7 @@ module OpenOffice
     SERVER_START_DELAY = 4
 
     # Log file
+    # TODO : Wrong
     LOG_FILE = Object.const_defined?(:RAILS_ROOT) ? File.join(RAILS_ROOT, "log", "openoffice.log") : ""
 
     def self.convert(origin, options = {:to => :txt})
@@ -37,7 +40,7 @@ module OpenOffice
           raise "Can't convert #{origin} to #{options[:to]}"
         end
 
-        timeout(10, :attempts => 2) do
+        Documentalist.timeout(10, :attempts => 2) do
           system("#{PYTHON_PATH} #{PY_OD_CONVERTER} #{origin} #{destination} > /dev/null 2>&1")
 
           # HACK : sometimes text files get saved in ISO-8859-1 instead of regular UTF-8, so we force
@@ -70,7 +73,7 @@ module OpenOffice
       system("/usr/bin/soffice -headless -accept=\"socket,host=127.0.0.1,port=8100;urp;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault #{">>" unless LOG_FILE.empty?} #{LOG_FILE} 2>&1 &")
 
       begin
-        timeout(2) do
+        SystemTimer.timeout(2.seconds) do
           while !running?
             print "."
           end
@@ -90,7 +93,7 @@ module OpenOffice
       raise "Not running!" unless running?
 
       begin
-        timeout(3, :attempts => 2) do
+        Documentalist.timeout(3, :attempts => 2) do
           while(running?)
             system("pkill -9 office")
           end
@@ -129,7 +132,7 @@ module OpenOffice
       if block_given?
         attempts = options[:attempts] || 1
         begin
-          Timeout::timeout(max_time) do
+          SystemTimer.timeout(max_time) do
             yield
           end
         rescue Timeout::Error
