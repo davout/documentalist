@@ -1,5 +1,4 @@
 require 'test/unit'
-require 'documentalist'
 require 'fileutils'
 require 'tmpdir'
 

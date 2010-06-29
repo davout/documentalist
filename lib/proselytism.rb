@@ -39,7 +39,7 @@ module Documentalist
         end
       end
       
-      private
+
 
       # Is OpenOffice server running?
       def self.running?

@@ -1,9 +1,8 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class ProselytismTest < ActiveSupport::TestCase
-
+class ProselytismTest < Test::Unit::TestCase
   def setup
-    # Pour avoir un test compltement reproductible
+    # Pour avoir un test complÃ¨tement reproductible
     Proselytism::Servers::OpenOffice.kill! if Documents::Servers::OpenOffice.running?
   end
 
@@ -27,9 +26,8 @@ class ProselytismTest < ActiveSupport::TestCase
     assert File.exist?(converted_doc)
     content_converted_file = File.open(converted_doc).read
     assert_equal false, content_converted_file.blank?
-    
+
     system("rm -f #{converted_doc}")
     assert !File.exist?(converted_doc)
   end
-
 end
