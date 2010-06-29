@@ -11,4 +11,5 @@ Echoe.new('documentalist', '0.1.0') do |p|
   p.test_pattern    = "test/**/*.rb"
   p.development_dependencies = []
   p.runtime_dependencies = ['zip >=2.0.2', 'SystemTimer >=1.2']
+  # wkhtmltopdf
 end  
