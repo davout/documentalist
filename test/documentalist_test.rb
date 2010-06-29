@@ -1,5 +1,4 @@
 require 'test/unit'
-require 'documentalist'
 
 class DocumentalistTest < Test::Unit::TestCase
   @@odt_fixture = File.join(File.dirname(__FILE__), "fixtures/fixture.odt")
