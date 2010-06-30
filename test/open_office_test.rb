@@ -26,7 +26,7 @@ class OpenOfficeTest < Test::Unit::TestCase
     assert @@oo_server.running?, "OpenOffice didn't start"
 
     pids = @@oo_server.pids
-    assert !pids.blank?,  "Oops, pid was nil!"
+    assert !(pids.nil? or pids.empty?),  "Oops, pid was blank!"
 
     @@oo_server.restart!
     assert_not_equal pids, @@oo_server.pids, "Seems like OpenOffice didn't actually get restarted"

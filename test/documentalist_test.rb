@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'system_timer'
+require 'tmpdir'
 
 class DocumentalistTest < Test::Unit::TestCase
   include FlexMock::TestCase
@@ -40,6 +41,23 @@ class DocumentalistTest < Test::Unit::TestCase
   end
 
   def test_logger
-    assert false, "Implement me"
+    log_file = File.join(Dir.tmpdir, "#{rand(10 ** 9).to_s}.log")
+
+    Documentalist.config[:log_file] = log_file
+    assert !File.exists?(log_file), "Log file already exists"
+
+    Documentalist.logger
+    assert File.exists?(log_file), "Log file should have been created"
+
+    assert_no_difference("File.size(\"#{log_file}\")", "Nothing should have been written") do
+      Documentalist.logger.debug("This message should go nowhere")
+    end
+
+    assert_difference("File.size(\"#{log_file}\")", nil, "Nothing should have been written") do
+      Documentalist.logger.warn("This message should be written !")
+    end
+    
+    FileUtils.rm(log_file)
+    assert !File.exists?(log_file), "Log file hasn't been removed properly"
   end
 end

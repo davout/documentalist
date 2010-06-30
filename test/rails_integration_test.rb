@@ -24,14 +24,16 @@ class RailsIntegrationTest < Test::Unit::TestCase
     # Check that the configuration got loaded up properly
     assert_equal Documentalist.config[:open_office][:python_path], '/usr/bin/python'
 
+    # Check that our configuration template got copied
+    assert File.exists?(File.join(RAILS_ROOT, %w{config documentalist.yml})),
+      "Configuration file did not get copied properly"
+
+    assert_equal Documentalist.config[:logfile], File.join(RAILS_ROOT, %w{log documentalist-#{RAILS_ENV}.log})
+
     # Delete fake RAILS_ROOT
     FileUtils.rm_rf tmp_dir
 
     # Check that we cleaned our mess up
     assert !File.exist?(File.join(RAILS_ROOT, %w{config documentalist.yml})), "Temporary file hasn't been removed properly"
-  end
-
-  def test_log_path_correctly_set
-    assert false, "Implement me"
   end
 end

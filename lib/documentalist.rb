@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'yaml'
 require 'system_timer'
+require 'logger'
 
 # Require all backends
 Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
@@ -9,6 +10,7 @@ end
 
 module Documentalist
   @@config = {}
+  @@logger = nil
 
   def self.config
     default_config! unless config?
@@ -120,8 +122,13 @@ module Documentalist
     end
   end
 
-  def self.log(*args)
-    # Implement me
+  def self.logger
+    unless @@logger
+      @@logger = Logger.new(Documentalist.config[:log_file])
+      @@logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
+    end
+
+    @@logger
   end
 
   private

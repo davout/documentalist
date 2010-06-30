@@ -14,7 +14,9 @@ if Object.const_defined? :Echoe
     p.test_pattern    = "test/**/*.rb"
     p.development_dependencies = ['flexmock >=0.8.6']
     p.runtime_dependencies = ['zip >=2.0.2', 'SystemTimer >=1.2']
-  
+
+    # TODO : Enforce some dependencies and don't make backend available if
+    # dependency is not available
     # wkhtmltopdf
     # iconv
     # pgrep
@@ -23,5 +25,8 @@ if Object.const_defined? :Echoe
     # grep
     # file
     # which
+    # jod converter 3.1
+    # open office 3
+
   end
 end
