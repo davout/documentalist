@@ -4,26 +4,32 @@
 
 development:
   open_office:
-    # Path to the puthon binary
-    python_path: /usr/bin/python
+    # Python configuration
+    python:
+      path: /usr/bin/python
+
+    # Java configuration
+    java:
+      path: /usr/bin/java
 
     # Path to the OpenOpffice binary
-    open_office_path: /usr/bin/soffice
+    open_office:
+      path: /usr/bin/soffice
 
-    # Select desired bridge between PYOD and JOD
-    bridge: JOD
+      # Select desired bridge between PYOD and JOD
+      bridge: JOD
 
-    # Maximum allowed CPU usage before the process is considered stalled
-    max_cpu: 80
+      # Maximum allowed CPU usage before the process is considered stalled
+      max_cpu: 80
 
-    # OpenOffice server allowed startup time (seconds)
-    server_start_delay: 5
+      # OpenOffice server allowed startup time (seconds)
+      server_start_delay: 5
 
-    # Conversion tries before giving up
-    conversion_tries: 3
+      # Conversion tries before giving up
+      conversion_tries: 3
 
-    # Maximum allowed time for converting a document
-    conversion_time_delay: 6
+      # Maximum allowed time for converting a document
+      conversion_time_delay: 6
 
 test:
   open_office:
