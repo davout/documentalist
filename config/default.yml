@@ -4,6 +4,9 @@ log_path: ~/documentalist.log
 python:
   path: /usr/bin/python
 
+java:
+  path: /usr/bin/java
+
 open_office:
   path: /usr/bin/soffice
   bridge: JOD

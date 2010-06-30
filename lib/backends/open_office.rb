@@ -8,15 +8,16 @@ module Documentalist
 
       Documentalist.timeout(Documentalist.config[:open_office][:max_conversion_time], :attempts => Documentalist.config[:open_office][:max_conversion_attempts]) do
         if Documentalist.config[:open_office][:bridge] == 'JOD'
-          # TODO : It's wrong to automatically assume java is in the path
-          # TODO : Bump JOD and manage multi threading : http://code.google.com/p/jodconverter/wiki/GettingStarted
+          # TODO : manage multi ooo instances : http://code.google.com/p/jodconverter/wiki/GettingStarted
           
-          system("java -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:to]}")
+          system("#{Documentalist.config[:java][:path]} -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:to]}")
         elsif Documentalist.config[:open_office][:bridge] == 'PYOD'
-          system("#{PYTHON_PATH} #{PYOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
+          system("#{Documentalist.config[:python][:path]} #{File.join(File.dirname(__FILE__), %w{open_office bridges pyodconverter.py})} #{origin} #{options[:to]}")
         end
-        self.convert_txt_to_utf8(options[:destination]) if options[:to] == :txt
-        options[:destination]
+
+        self.convert_txt_to_utf8(options[:to]) if options[:to_format] == :txt
+        
+        options[:to]
       end
     end
 
@@ -43,7 +44,7 @@ module Documentalist
       def self.start!
         raise "Already running!" if running?
 
-        log_path = Documentalist.config[:log_path] || "/dev/null"
+        log_path = Documentalist.config[:log_file] || "/dev/null"
 
         command_line = "#{Documentalist.config[:open_office][:path]} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault"
         command_line << " >> #{log_path} 2>&1"

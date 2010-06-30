@@ -63,7 +63,11 @@ module Documentalist
     end
     
     # Convert to plain text by default
-    options[:to_format] = (options[:to_format].nil? or options[:to_format].empty?) ? :txt : options[:to_format].to_sym
+    options[:to_format] = options[:to_format] ? options[:to_format].to_sym : :txt
+
+    unless options[:to]
+      options[:to] = file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
+    end
 
     options[:from_format] = File.extname(file).gsub(/\./, "").to_sym
 
