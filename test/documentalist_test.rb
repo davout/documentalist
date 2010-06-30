@@ -24,7 +24,7 @@ class DocumentalistTest < Test::Unit::TestCase
   end
 
   # Test that we use a system timeout and not a green thread based timeout that
-  # could possibly not work on some external system calls
+  # could possibly not work on some long external system calls
   def test_timeout_uses_system_timeout
     flexmock(SystemTimer).should_receive(:timeout).once
     Documentalist.timeout(0.1) { }
@@ -37,5 +37,9 @@ class DocumentalistTest < Test::Unit::TestCase
 
     # Check that at least a configuration key has been magically set
     assert Documentalist.config[:open_office]
+  end
+
+  def test_logger
+    assert false, "Implement me"
   end
 end

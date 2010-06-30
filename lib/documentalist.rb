@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'yaml'
+require 'system_timer'
 
 # Require all backends
 Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
@@ -117,6 +118,10 @@ module Documentalist
         raise
       end
     end
+  end
+
+  def self.log(*args)
+    # Implement me
   end
 
   private

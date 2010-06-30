@@ -1,9 +1,14 @@
 # Default configuration in case none is provided
+log_path: ~/documentalist.log
+
+python:
+  path: /usr/bin/python
+
 open_office:
-  python_path: /usr/bin/python
-  open_office_path: /usr/bin/soffice
+  path: /usr/bin/soffice
   bridge: JOD
   max_cpu: 80
-  server_start_delay: 5
-  conversion_tries: 3
-  conversion_time_delay: 6
+  max_startup_time: 3
+  wakeup_time: 3
+  max_conversion_attempts: 3
+  max_conversion_time: 5

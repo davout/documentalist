@@ -6,10 +6,14 @@ module Documentalist
       # OO auto-start option if in Rails app ?
       Server.ensure_available
 
-      Documentalist.timeout(CONVERSION_TIME_DELAY, :attempts => CONVERSION_TRIES) do
-        if BRIDGE == 'JOD'
-          system("java -jar #{JOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
-        elsif BRIDGE == 'PYOD'
+      Documentalist.timeout(Documentalist.config[:open_office][:max_conversion_time], :attempts => Documentalist.config[:open_office][:max_conversion_attempts]) do
+        if Documentalist.config[:open_office][:bridge] == 'JOD'
+          # TODO : It's wrong to automatically assume java is in the path
+          # TODO : Bump JOD and manage multi threading : http://code.google.com/p/jodconverter/wiki/GettingStarted
+          raise origin
+          #raise "java -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:destination]}"
+          system("java -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:destination]}")
+        elsif Documentalist.config[:open_office][:bridge] == 'PYOD'
           system("#{PYTHON_PATH} #{PYOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
         end
         self.convert_txt_to_utf8(options[:destination]) if options[:to] == :txt
@@ -40,20 +44,26 @@ module Documentalist
       def self.start!
         raise "Already running!" if running?
 
-        system("#{Documentalist.config[:open_office][:path]} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault >> #{LOG_PATH} 2>&1 &")
+        log_path = Documentalist.config[:log_path] || "/dev/null"
+
+        command_line = "#{Documentalist.config[:open_office][:path]} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault"
+        command_line << " >> #{log_path} 2>&1"
+        command_line << " &"
+
+        system(command_line)
         
         begin
-          Documentalist.timeout(3) do
+          Documentalist.timeout(Documentalist.config[:open_office][:max_startup_time]) do
             while !running?
-              print "."
+              # Do nothing
             end
           end
-        rescue
-          raise "Could not start OpenOffice"
+        rescue Timeout::Error
+          raise "OpenOffice didn't start fast enough, you might want to increase the max_startup_time value or check your OpenOffice configuration"
         end
 
-        # OpenOffice needs some time to wake up
-        sleep(SERVER_START_DELAY)
+        # OpenOffice needs some time to fully wake up
+        sleep(Documentalist.config[:open_office][:wakeup_time])
         nil
       end
 
@@ -79,7 +89,7 @@ module Documentalist
       def self.stalled?
         if running?
           cpu_usage = `ps -Ao pcpu,pid,comm | grep soffice | grep [#{pids.collect{|pid| '\('+pid.to_s+'\)'}}]`.split(/\n/)
-          cpu_usage.any? { |usage| /^\s*\d+/.match(usage)[0].strip.to_i > MAX_CPU }
+          cpu_usage.any? { |usage| /^\s*\d+/.match(usage)[0].strip.to_i > Documentalist.config[:open_office][:max_cpu] }
         end
       end
 
@@ -91,7 +101,7 @@ module Documentalist
 
       # Get OO processes pids
       def self.pids
-        `pgrep soffice`.split.map(&:to_i) unless `pgrep soffice`.blank?
+        `pgrep soffice`.split.map(&:to_i) unless `pgrep soffice`.empty?
       end
     end
   end

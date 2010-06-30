@@ -30,4 +30,8 @@ class RailsIntegrationTest < Test::Unit::TestCase
     # Check that we cleaned our mess up
     assert !File.exist?(File.join(RAILS_ROOT, %w{config documentalist.yml})), "Temporary file hasn't been removed properly"
   end
+
+  def test_log_path_correctly_set
+    assert false, "Implement me"
+  end
 end

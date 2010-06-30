@@ -19,6 +19,7 @@ if Object.const_defined? :Echoe
     # iconv
     # pgrep
     # ps
+    # pkill
     # grep
     # file
     # which

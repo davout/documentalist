@@ -1,3 +1,7 @@
+# Sample Rails configuration file
+# Optional settings are :
+#  * log_path : Allows you to override the default log file [Rail.root/log/documentalist.log]
+
 development:
   open_office:
     # Path to the puthon binary
