@@ -49,16 +49,16 @@ module Documentalist
   end
 
   # Takes all conversion requests and dispatches them appropriately
-  def self.convert(file_name, options={})
-    raise "#{file_name} does not exist !" unless File.exist?(file_name)
+  def self.convert(file, options={})
+    raise "#{file} does not exist !" unless File.exist?(file)
 
     # Convert to plain text by default
     options[:to] = (options[:to].nil? or options[:to].empty?) ? :txt : options[:to].to_sym
 
-    options[:from] = File.extname file_name
+    options[:from] = File.extname file
 
     backend = backend_for_conversion(options[:from], options[:to])
-    converted = backend.convert(file_name, options)
+    converted = backend.convert(file, options)
 
     yield(converted) if block_given?
     converted

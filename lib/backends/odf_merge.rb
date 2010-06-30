@@ -52,7 +52,7 @@ module Documentalist
         if File.extname(options[:to]) == File.extname(template)
           FileUtils.mv(tmp_merged_template, options[:to])
         else
-          Documentalist.convert(tmp_merged_template, options[:to])
+          Documentalist.convert(tmp_merged_template, :to => options[:to])
           FileUtils.rm(tmp_merged_template)
         end
       else
