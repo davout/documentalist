@@ -1,0 +1,9 @@
+# Default configuration in case none is provided
+open_office:
+  python_path: /usr/bin/python
+  open_office_path: /usr/bin/soffice
+  bridge: JOD
+  max_cpu: 80
+  server_start_delay: 5
+  conversion_tries: 3
+  conversion_time_delay: 6

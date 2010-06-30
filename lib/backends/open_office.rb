@@ -28,7 +28,7 @@ module Documentalist
     module Server
       # Is OpenOffice server running?
       def self.running?
-        !`pgrep soffice`.blank?
+        !`pgrep soffice`.empty?
       end
 
       # Restart if running or start new instance
@@ -40,7 +40,7 @@ module Documentalist
       def self.start!
         raise "Already running!" if running?
 
-        system("#{OPEN_OFFICE_PATH} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault >> #{LOG_PATH} 2>&1 &")
+        system("#{Documentalist.config[:open_office][:path]} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault >> #{LOG_PATH} 2>&1 &")
         
         begin
           Documentalist.timeout(3) do

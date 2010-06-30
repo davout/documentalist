@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'yaml'
 
 # Require all backends
 Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
@@ -6,13 +7,29 @@ Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend
 end
 
 module Documentalist
+  @@config = {}
+
   def self.config
-    @@config || {}
+    default_config! unless config?
+    @@config
   end
 
   def self.config=(hash)
     # We want to symbolize keys ourselves since we're not depending on Active Support
     @@config = symbolize hash
+  end
+
+  def self.config?
+    @@config != {}
+  end
+
+  def self.default_config!
+    config_from_yaml! File.join(File.dirname(__FILE__), %w{.. config default.yml})
+  end
+
+  def self.config_from_yaml!(file, options = {})
+    self.config = YAML::load(File.open(file))
+    self.config = config[options[:section].to_sym] if options[:section]
   end
 
   BACKENDS = {

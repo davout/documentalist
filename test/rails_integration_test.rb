@@ -4,14 +4,15 @@ require 'tmpdir'
 class RailsIntegrationTest < Test::Unit::TestCase
   def test_config_file_gets_copied_and_loaded
     # Undefine Documentalist so we don't get annoying warnings about constant redefinition
-    # when redefining Documentalist::BACKENDS when requiring it a second time
+    # when redefining Documentalist::BACKENDS when requiring it a second time after it
+    # being required a first time through the 'test_helper' require
     Object.send(:remove_const, :Documentalist)
 
     # Ensure that RAILS_ROOT is undefined
     assert !Object.const_defined?(:RAILS_ROOT), "RAILS_ROOT constant is defined, I won't go further"
 
     # Set up a fake RAILS_ROOT
-    tmp_dir = Object.const_set :RAILS_ROOT, File.join(Dir.tmpdir, (rand * 10 ** 9).to_i.to_s)
+    tmp_dir = Object.const_set :RAILS_ROOT, File.join(Dir.tmpdir, (rand(10**9)).to_s)
     FileUtils.mkdir_p File.join(tmp_dir, "config")
 
     # Set up a fake RAILS_ENV

@@ -21,5 +21,6 @@ if Object.const_defined? :Echoe
     # ps
     # grep
     # file
+    # which
   end
 end
