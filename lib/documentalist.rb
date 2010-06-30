@@ -42,8 +42,11 @@ module Documentalist
   }
 
   # Finds the relevant server to perform the conversion
-  def self.server_for_conversion(origin, destination)
-    Servers::CONVERTERS.detect do |s, conversions|
+  def self.backend_for_conversion(origin, destination)
+    origin = origin.to_s.gsub(/.*\./, "").to_sym
+    destination = destination.to_s.gsub(/.*\./, "").to_sym
+
+    BACKENDS.detect do |s, conversions|
       conversions.keys.flatten.include?(origin) and conversions.values.flatten.include?(destination)
     end.to_a.first
   end
