@@ -16,7 +16,8 @@ if Object.const_defined? :Echoe
     p.runtime_dependencies = ['zip >=2.0.2', 'SystemTimer >=1.2']
 
     # TODO : Enforce some dependencies and don't make backend available if
-    # dependency is not available
+    # the dependency is not met
+    #
     # wkhtmltopdf
     # iconv
     # pgrep
@@ -25,8 +26,7 @@ if Object.const_defined? :Echoe
     # grep
     # file
     # which
-    # jod converter 3.1
+    # jod converter
     # open office 3
-
   end
 end

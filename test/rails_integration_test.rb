@@ -22,7 +22,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
     require File.join(File.dirname(__FILE__), %w{.. rails init})
 
     # Check that the configuration got loaded up properly
-    assert_equal Documentalist.config[:open_office][:python_path], '/usr/bin/python'
+    assert_equal Documentalist.config[:python][:path], '/usr/bin/python'
 
     # Check that our configuration template got copied
     assert File.exists?(File.join(RAILS_ROOT, %w{config documentalist.yml})),
