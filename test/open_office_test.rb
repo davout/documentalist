@@ -11,7 +11,7 @@ class OpenOfficeTest < Test::Unit::TestCase
   def test_open_office_converts_from_odf_to_pdf
     destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
 
-    Documentalist.convert fixture_001, destination
+    Documentalist.convert fixture_001, :to => destination
 
     assert File.exist?(destination), "Nothing seems to have been converted..."
 
@@ -30,5 +30,12 @@ class OpenOfficeTest < Test::Unit::TestCase
 
     @@oo_server.restart!
     assert_not_equal pids, @@oo_server.pids, "Seems like OpenOffice didn't actually get restarted"
+  end
+
+  def test_open_office_should_explode_if_no_destination_given
+    assert_raise Documentalist::Error do
+      # We want to make sure an exception is raised if no destination is passed
+      Documentalist.convert(__FILE__)
+    end
   end
 end

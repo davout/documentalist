@@ -10,9 +10,8 @@ module Documentalist
         if Documentalist.config[:open_office][:bridge] == 'JOD'
           # TODO : It's wrong to automatically assume java is in the path
           # TODO : Bump JOD and manage multi threading : http://code.google.com/p/jodconverter/wiki/GettingStarted
-          raise origin
-          #raise "java -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:destination]}"
-          system("java -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:destination]}")
+          
+          system("java -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:to]}")
         elsif Documentalist.config[:open_office][:bridge] == 'PYOD'
           system("#{PYTHON_PATH} #{PYOD_CONVERTER_PATH} #{origin} #{options[:destination]}")
         end

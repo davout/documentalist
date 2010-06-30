@@ -58,12 +58,16 @@ module Documentalist
   def self.convert(file, options={})
     raise "#{file} does not exist !" unless File.exist?(file)
 
+    unless options[:to] or options[:to_format]
+      raise Documentalist::Error.new("No destination or format was given")
+    end
+    
     # Convert to plain text by default
-    options[:to] = (options[:to].nil? or options[:to].empty?) ? :txt : options[:to].to_sym
+    options[:to_format] = (options[:to_format].nil? or options[:to_format].empty?) ? :txt : options[:to_format].to_sym
 
-    options[:from] = File.extname file
+    options[:from_format] = File.extname(file).gsub(/\./, "").to_sym
 
-    backend = backend_for_conversion(options[:from], options[:to])
+    backend = backend_for_conversion(options[:from_format], options[:to_format])
     converted = backend.convert(file, options)
 
     yield(converted) if block_given?
@@ -131,8 +135,6 @@ module Documentalist
     @@logger
   end
 
-  private
-
   # Returns a new hash with recursively symbolized keys
   def self.symbolize(hash)
     hash.each_key do |key|
@@ -140,4 +142,6 @@ module Documentalist
       hash[key.to_sym] = symbolize(hash[key.to_sym]) if hash[key.to_sym].is_a?(Hash)
     end
   end
+
+  class Error < RuntimeError; end
 end  
