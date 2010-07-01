@@ -60,4 +60,8 @@ class DocumentalistTest < Test::Unit::TestCase
     FileUtils.rm(log_file)
     assert !File.exists?(log_file), "Log file hasn't been removed properly"
   end
+
+  def test_extract_text
+    assert false, "Implement me"
+  end
 end

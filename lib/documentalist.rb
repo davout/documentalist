@@ -79,12 +79,13 @@ module Documentalist
   end
 
   def self.extract_text(file)
-    converted = convert(file, :to => :txt)
+    converted = convert(file, :to_format => :txt)
     if converted and File.exist?(converted)
       text = File.open(converted).read.toutf8
+
       FileUtils.rm(converted)
 
-      yield(extracted_text) if block_given?
+      yield(text) if block_given?
       text
     end
   end
