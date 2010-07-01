@@ -6,14 +6,21 @@ module Documentalist
       # OO auto-start option if in Rails app ?
       Server.ensure_available
 
+      # TODO : manage multi ooo instances : http://code.google.com/p/jodconverter/wiki/GettingStarted
+
       Documentalist.timeout(Documentalist.config[:open_office][:max_conversion_time], :attempts => Documentalist.config[:open_office][:max_conversion_attempts]) do
         if Documentalist.config[:open_office][:bridge] == 'JOD'
-          # TODO : manage multi ooo instances : http://code.google.com/p/jodconverter/wiki/GettingStarted
-          
-          system("#{Documentalist.config[:java][:path]} -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:to]}")
+          command = "#{Documentalist.config[:java][:path]} -jar #{File.join(File.dirname(__FILE__), %w{open_office bridges jodconverter-2.2.2 lib jodconverter-cli-2.2.2.jar})} #{origin} #{options[:to]}"          
         elsif Documentalist.config[:open_office][:bridge] == 'PYOD'
-          system("#{Documentalist.config[:python][:path]} #{File.join(File.dirname(__FILE__), %w{open_office bridges pyodconverter.py})} #{origin} #{options[:to]}")
+          command = "#{Documentalist.config[:python][:path]} #{File.join(File.dirname(__FILE__), %w{open_office bridges pyodconverter.py})} #{origin} #{options[:to]}"
         end
+
+        if Documentalist.config[:log_file] and !Documentalist.config[:log_file].empty?
+          command += " >> #{Documentalist.config[:log_file]} 2>&1"
+        end
+
+        Documentalist.logger.debug("Going to run #{Documentalist.config[:open_office][:bridge]} bridge with command -- #{command}")
+        system(command)
 
         self.convert_txt_to_utf8(options[:to]) if options[:to_format] == :txt
         
@@ -37,17 +44,18 @@ module Documentalist
 
       # Restart if running or start new instance
       def self.restart!
+        Documentalist.logger.debug("Restarting OpenOffice instance...")
         (kill! if running?) and start!
+        Documentalist.logger.debug("...done !")
       end
 
       # Start new instance
       def self.start!
+        Documentalist.logger.debug("Starting OpenOffice instance...")
         raise "Already running!" if running?
 
-        log_path = Documentalist.config[:log_file] || "/dev/null"
-
         command_line = "#{Documentalist.config[:open_office][:path]} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault"
-        command_line << " >> #{log_path} 2>&1"
+        command_line << " >> #{Documentalist.config[:log_file]} 2>&1"
         command_line << " &"
 
         system(command_line)

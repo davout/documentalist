@@ -28,10 +28,12 @@ class RailsIntegrationTest < Test::Unit::TestCase
     assert File.exists?(File.join(RAILS_ROOT, %w{config documentalist.yml})),
       "Configuration file did not get copied properly"
 
-    assert_equal Documentalist.config[:logfile], File.join(RAILS_ROOT, %w{log documentalist-#{RAILS_ENV}.log})
+    assert_equal Documentalist.config[:log_file], File.join(RAILS_ROOT, "log", "documentalist-#{RAILS_ENV}.log")
 
     # Delete fake RAILS_ROOT
     FileUtils.rm_rf tmp_dir
+
+    # Reset logger
 
     # Check that we cleaned our mess up
     assert !File.exist?(File.join(RAILS_ROOT, %w{config documentalist.yml})), "Temporary file hasn't been removed properly"

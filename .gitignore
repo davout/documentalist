@@ -3,3 +3,4 @@ doc
 Manifest
 .specification
 *.gem
+*.log

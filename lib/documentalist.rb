@@ -81,7 +81,13 @@ module Documentalist
   def self.extract_text(file)
     converted = convert(file, :to_format => :txt)
     if converted and File.exist?(converted)
-      text = File.open(converted).read.toutf8
+      text = File.open(converted).read
+      
+      if text.respond_to? :toutf8
+        text = text.toutf8
+      else
+        Documentalist.logger.warn("Not in a Rails environment String#toutf8 isn't available, UTF-8 encoding not guaranteed!")
+      end
 
       FileUtils.rm(converted)
 
@@ -134,8 +140,10 @@ module Documentalist
     end
   end
 
+  # Returns the logger object used to log documentalist operations
   def self.logger
-    unless @@logger
+    unless @@logger      
+      Documentalist.config[:log_file] ||= File.join(File.dirname(File.expand_path(__FILE__)), %w{.. documentalist.log})
       @@logger = Logger.new(Documentalist.config[:log_file])
       @@logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
     end

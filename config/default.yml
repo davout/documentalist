@@ -1,5 +1,5 @@
 # Default configuration in case none is provided
-log_path: ~/documentalist.log
+log_level: debug
 
 python:
   path: /usr/bin/python
@@ -12,6 +12,6 @@ open_office:
   bridge: JOD
   max_cpu: 80
   max_startup_time: 3
-  wakeup_time: 3
+  wakeup_time: 2
   max_conversion_attempts: 3
   max_conversion_time: 5

@@ -44,6 +44,11 @@ class DocumentalistTest < Test::Unit::TestCase
     log_file = File.join(Dir.tmpdir, "#{rand(10 ** 9).to_s}.log")
 
     Documentalist.config[:log_file] = log_file
+    Documentalist.config[:log_level] = 'warn'
+
+    # Reset logger
+    Documentalist.send :class_variable_set, :@@logger, nil
+
     assert !File.exists?(log_file), "Log file already exists"
 
     Documentalist.logger
@@ -56,12 +61,17 @@ class DocumentalistTest < Test::Unit::TestCase
     assert_difference("File.size(\"#{log_file}\")", nil, "Nothing should have been written") do
       Documentalist.logger.warn("This message should be written !")
     end
-    
+
+    # Reset logger
+    Documentalist.send :class_variable_set, :@@logger, nil
+
     FileUtils.rm(log_file)
     assert !File.exists?(log_file), "Log file hasn't been removed properly"
   end
 
   def test_extract_text
-    assert false, "Implement me"
+    assert_match /thing/,
+      Documentalist.extract_text(fixture_001),
+      "Text was not properly extracted for fixture 001"
   end
 end
