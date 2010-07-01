@@ -3,8 +3,8 @@
 
 module Documentalist
   module NetPBM
-    def convert
-      system("cd #{temp_dir} && ppmtojpeg #{ppm_image} > #{ppm_image.gsub(/ppm$/, "jpg")}")
+    def self.convert(file, options)
+      system "ppmtojpeg #{file} > #{options[:to]}"
     end
   end
 end

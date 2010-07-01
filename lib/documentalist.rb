@@ -90,25 +90,28 @@ module Documentalist
   end
 
   def self.extract_images(file)
-    temp_dir = File.join(CONVERSIONS_PATH, (Time.new.to_f*100_000).to_i.to_s)
+    temp_dir = File.join(Dir.tmpdir, rand(10**9).to_s)
     
     if File.extname(file) == '.pdf'
       temp_file = File.join(temp_dir, File.basename(file))
 
-      system "mkdir #{temp_dir} && cp #{file} #{temp_file}"
-      system "cd #{temp_dir} && pdfimages #{temp_file} 'img'"
+      FileUtils.mkdir_p temp_dir
+      FileUtils.cp file, temp_file
+      
+      system "pdfimages #{temp_file} '#{File.join(temp_dir, "img")}'"
 
       Dir.glob(File.join(temp_dir, "*.ppm")).each do |ppm_image|
-        Documentalist.convert(ppm_image, :to => :jpeg)
+        #raise ppm_image
+        Documentalist.convert(ppm_image, :to_format => :jpeg)
       end
     else
-      convert file, :to => :html, :directory => temp_dir
+      Documentalist.convert file, :to_format => :html
     end
 
-    image_file_names = Dir.glob(File.join(temp_dir, "*.{jpg,jpeg,bmp,tif,tiff,gif,png}"))
+    image_files = Dir.glob(File.join(temp_dir, "*.{jpg,jpeg,bmp,tif,tiff,gif,png}"))
 
-    yield(image_file_names) if block_given?
-    image_file_names
+    yield(image_files) if block_given?
+    image_files
   end
 
   # Runs a block with a system-enforced timeout and optionally retry with an
