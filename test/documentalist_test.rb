@@ -18,8 +18,8 @@ class DocumentalistTest < Test::Unit::TestCase
         :d => "e"
       }
     }
-    
-    assert_equal Documentalist.send(:symbolize, hash), 
+
+    assert_equal Documentalist.send(:symbolize, hash),
       symbolized,
       "Hash wasn't properly symbolized"
   end

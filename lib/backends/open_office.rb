@@ -2,11 +2,13 @@ module Documentalist
   module OpenOffice
     # Converts documents
     def self.convert(origin, options)
+      Documentalist.logger.debug("Going to convert #{origin} to #{options[:to]}")
+
       # See how to make OpenOffice startup as smooth as possible and not on first conversion
       # OO auto-start option if in Rails app ?
       Server.ensure_available
 
-      # TODO : manage multi ooo instances : http://code.google.com/p/jodconverter/wiki/GettingStarted
+      # TODO : manage multi OO instances : http://code.google.com/p/jodconverter/wiki/GettingStarted
 
       Documentalist.timeout(Documentalist.config[:open_office][:max_conversion_time], :attempts => Documentalist.config[:open_office][:max_conversion_attempts]) do
         if Documentalist.config[:open_office][:bridge] == 'JOD'

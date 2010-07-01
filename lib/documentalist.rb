@@ -2,6 +2,7 @@ require 'rubygems'
 require 'yaml'
 require 'system_timer'
 require 'logger'
+require 'kconv'
 
 # Require all backends
 Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
@@ -81,16 +82,8 @@ module Documentalist
   def self.extract_text(file)
     converted = convert(file, :to_format => :txt)
     if converted and File.exist?(converted)
-      text = File.open(converted).read
-      
-      if text.respond_to? :toutf8
-        text = text.toutf8
-      else
-        Documentalist.logger.warn("Not in a Rails environment String#toutf8 isn't available, UTF-8 encoding not guaranteed!")
-      end
-
+      text = Kconv.toutf8(File.open(converted).read)
       FileUtils.rm(converted)
-
       yield(text) if block_given?
       text
     end
