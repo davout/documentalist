@@ -33,12 +33,11 @@ module Documentalist
   end
 
   BACKENDS = {
-    :OpenOffice => {[:odt, :doc, :rtf, :docx, :txt, :html, :htm, :wps] => [:odt, :doc, :rtf, :pdf, :txt, :html, :htm, :wps]},
+    # Find a better pattern to pick backend, this one smells pretty bad
+    :WkHtmlToPdf => {[:html, :htm] => :pdf},
+    :OpenOffice => {[:odt, :doc, :rtf, :docx, :txt, :wps] => [:odt, :doc, :rtf, :pdf, :txt, :html, :htm, :wps]},
     :NetPBM => {:ppm => [:jpg, :jpeg]},
     :PdfTools => {:pdf => :txt},
-    
-    # Find a better pattern to pick backend, this one smells pretty bad
-    # WkHTML2PDF => {[:html, :htm] => :pdf}
   }
 
   # Finds the relevant server to perform the conversion
@@ -46,7 +45,7 @@ module Documentalist
     origin = origin.to_s.gsub(/.*\./, "").to_sym
     destination = destination.to_s.gsub(/.*\./, "").to_sym
 
-    send :const_get, BACKENDS.detect do |s, conversions|
+    BACKENDS.map { |b| [send(:const_get, b[0]), b[1]] }.detect do |s, conversions|
       conversions.keys.flatten.include?(origin) and conversions.values.flatten.include?(destination)
     end.to_a.first
   end
@@ -55,15 +54,12 @@ module Documentalist
   def self.convert(file, options={})
     raise "#{file} does not exist !" unless File.exist?(file)
 
-    unless options[:to] or options[:to_format]
-      raise Documentalist::Error.new("No destination or format was given")
-    end
-    
-    # Convert to plain text by default
-    options[:to_format] = options[:to_format] ? options[:to_format].to_sym : :txt
-
-    unless options[:to]
+    if options[:to_format]
       options[:to] = file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
+    elsif options[:to]
+      options[:to_format] = File.extname(options[:to]).gsub(/\./, "").to_sym
+    else
+      raise Documentalist::Error.new("No destination or format was given")
     end
 
     options[:from_format] = File.extname(file).gsub(/\./, "").to_sym

@@ -7,6 +7,10 @@ def fixture_001
   File.join(File.dirname(__FILE__), "fixtures/fixture_001.odt")
 end
 
+def fixture_002
+  File.join(File.dirname(__FILE__), "fixtures/fixture_002.html")
+end
+
 class Test::Unit::TestCase
   def assert_difference(code, difference = 0, message = nil)
     message = "Returned values were equal" unless message
