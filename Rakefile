@@ -14,19 +14,15 @@ if Object.const_defined? :Echoe
     p.test_pattern    = "test/**/*.rb"
     p.development_dependencies = ['flexmock >=0.8.6']
     p.runtime_dependencies = ['zip >=2.0.2', 'SystemTimer >=1.2']
+  end
+end
 
-    # TODO : Enforce some dependencies and don't make backend available if
-    # the dependency is not met
-    #
-    # wkhtmltopdf
-    # iconv
-    # pgrep
-    # ps
-    # pkill
-    # grep
-    # file
-    # which
-    # jod converter
-    # open office 3
+namespace :documentalist do
+  namespace :backends do
+    desc "Checks that the required dependencies are met for the different backends"
+    task :checks do
+      require File.join(File.dirname(__FILE__), "init")
+      Documentalist.check_dependencies
+    end
   end
 end

@@ -3,11 +3,7 @@ require 'yaml'
 require 'system_timer'
 require 'logger'
 require 'kconv'
-
-# Require all backends
-Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
-  require backend
-end
+require File.join(File.dirname(__FILE__),'dependencies')
 
 module Documentalist
   @@config = {}
@@ -37,9 +33,9 @@ module Documentalist
   end
 
   BACKENDS = {
-    OpenOffice => {[:odt, :doc, :rtf, :docx, :txt, :html, :htm, :wps] => [:odt, :doc, :rtf, :pdf, :txt, :html, :htm, :wps]},
-    NetPBM => {:ppm => [:jpg, :jpeg]},
-    PdfTools => {:pdf => :txt},
+    :OpenOffice => {[:odt, :doc, :rtf, :docx, :txt, :html, :htm, :wps] => [:odt, :doc, :rtf, :pdf, :txt, :html, :htm, :wps]},
+    :NetPBM => {:ppm => [:jpg, :jpeg]},
+    :PdfTools => {:pdf => :txt},
     
     # Find a better pattern to pick backend, this one smells pretty bad
     # WkHTML2PDF => {[:html, :htm] => :pdf}
@@ -50,7 +46,7 @@ module Documentalist
     origin = origin.to_s.gsub(/.*\./, "").to_sym
     destination = destination.to_s.gsub(/.*\./, "").to_sym
 
-    BACKENDS.detect do |s, conversions|
+    send :const_get, BACKENDS.detect do |s, conversions|
       conversions.keys.flatten.include?(origin) and conversions.values.flatten.include?(destination)
     end.to_a.first
   end
@@ -144,6 +140,20 @@ module Documentalist
     @@logger
   end
 
+  # Checks the dependencies for backends
+  def self.check_dependencies
+    puts "Checking backends system dependencies"
+
+    Documentalist.constants.each do |backend|
+      backend = Documentalist.const_get backend.to_sym
+
+      if backend.respond_to? :check_dependencies
+        puts "Checking dependencies for #{backend.to_s}"
+        backend.send :check_dependencies
+      end
+    end
+  end
+
   # Returns a new hash with recursively symbolized keys
   def self.symbolize(hash)
     hash.each_key do |key|
@@ -153,4 +163,9 @@ module Documentalist
   end
 
   class Error < RuntimeError; end
-end  
+end
+
+# Require all backends
+Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
+  require backend
+end

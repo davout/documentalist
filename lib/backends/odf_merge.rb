@@ -10,6 +10,8 @@ module Documentalist
 
   # This module provides open document merge functionality
   module ODFMerge
+    include Documentalist::Dependencies
+
     def self.merge_string(string, options = {})
       locals = options[:locals]
 

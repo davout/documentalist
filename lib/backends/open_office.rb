@@ -1,5 +1,16 @@
 module Documentalist
   module OpenOffice
+    include Documentalist::Dependencies
+
+    depends_on_binaries! "ps" => "use Documentalist in a Posix compliant OS",
+      Documentalist.config[:open_office][:path] => "install Open Office and correctly configure the path to its binary",
+      "pkill" => "install pkill binary and make it available through the PATH",
+      "pgrep" => "install pgrep binary and make it available through the PATH",
+      "java" => "install java",
+      "python" => "install python",
+      "file" => "install file binary",
+      "iconv" => "install iconv binary"
+
     # Converts documents
     def self.convert(origin, options)
       Documentalist.logger.debug("Going to convert #{origin} to #{options[:to]}")
