@@ -4,3 +4,4 @@ Manifest
 .specification
 *.gem
 *.log
+*.gemspec
