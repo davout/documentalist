@@ -74,4 +74,12 @@ class DocumentalistTest < Test::Unit::TestCase
       Documentalist.extract_text(fixture_001),
       "Text was not properly extracted for fixture 001"
   end
+
+  def test_extract_stream
+    returned_data = Documentalist.convert(fixture_001, :stream => :txt) do |data|
+      assert_match /thing/, data, "Converted data wasn't streamed properly"
+    end
+
+    assert_match /thing/, returned_data, "Converted data wasn't streamed properly"
+  end
 end

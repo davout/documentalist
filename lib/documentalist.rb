@@ -51,15 +51,23 @@ module Documentalist
   end
 
   # Takes all conversion requests and dispatches them appropriately
-  def self.convert(file, options={})
-    raise "#{file} does not exist !" unless File.exist?(file)
+  def self.convert(file=nil, options={})
+    if options[:input] and options[:input_format] and file.nil?
+      file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
+      File.open(file) { |f| f.write(options[:input]) }
+    end
+
+    raise Documentalist::Error.new("#{file} does not exist !") unless File.exist?(file)
 
     if options[:to_format]
       options[:to] = file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
     elsif options[:to]
       options[:to_format] = File.extname(options[:to]).gsub(/\./, "").to_sym
+    elsif options[:stream]
+      options[:to_format] = options[:stream]
+      options[:to] = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:to_format]}")
     else
-      raise Documentalist::Error.new("No destination or format was given")
+      raise Documentalist::Error.new("No destination, format, or stream format was given")
     end
 
     options[:from_format] = File.extname(file).gsub(/\./, "").to_sym
@@ -67,8 +75,19 @@ module Documentalist
     backend = backend_for_conversion(options[:from_format], options[:to_format])
     backend.convert(file, options)
 
-    yield(options[:to]) if block_given?
-    options[:to]
+    if options[:input] and options[:input_format] and file.nil?
+      FileUtils.rm(file)
+    end
+
+    if options[:stream]
+      data = File.read(options[:to])
+      FileUtils.rm(options[:to])
+      yield(data) if block_given?
+      data
+    else
+      yield(options[:to]) if block_given?
+      options[:to]
+    end
   end
 
   def self.extract_text(file)
@@ -128,7 +147,7 @@ module Documentalist
 
   # Returns the logger object used to log documentalist operations
   def self.logger
-    unless @@logger      
+    unless @@logger
       Documentalist.config[:log_file] ||= File.join(File.dirname(File.expand_path(__FILE__)), %w{.. documentalist.log})
       @@logger = Logger.new(Documentalist.config[:log_file])
       @@logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
