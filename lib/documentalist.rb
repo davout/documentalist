@@ -65,14 +65,15 @@ module Documentalist
     options[:from_format] = File.extname(file).gsub(/\./, "").to_sym
 
     backend = backend_for_conversion(options[:from_format], options[:to_format])
-    converted = backend.convert(file, options)
+    backend.convert(file, options)
 
-    yield(converted) if block_given?
-    converted
+    yield(options[:to]) if block_given?
+    options[:to]
   end
 
   def self.extract_text(file)
     converted = convert(file, :to_format => :txt)
+    
     if converted and File.exist?(converted)
       text = Kconv.toutf8(File.open(converted).read)
       FileUtils.rm(converted)

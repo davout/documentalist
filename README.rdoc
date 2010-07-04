@@ -1,3 +1,15 @@
 = Documentalist
+Rails gem for easily managing documents, converting them from a format to another,
+and merging data into ODF templates.
 
-Rails gem for talking to OpenOffice and merging data into OpenDocument templates using an ERB-like syntax.
+= Checking for external dependencies
+Documentalist assembles various moving parts that are necessary to perform the actual
+conversions, you can run run the documentalist:backends:checks task to see if these
+dependencies are met on your system, if it isn't the case it will give you some tips
+on how to fix it.
+
+= Examples
+  Documentalist.convert('/home/somefile.doc', :to => '/home/someotherfile.pdf')
+
+= Installation
+Require the gem in your Rails or Ruby application and you should be good to go !

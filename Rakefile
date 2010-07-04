@@ -5,7 +5,7 @@ require 'rake'
 require 'echoe' rescue nil
 
 if Object.const_defined? :Echoe
-  Echoe.new('documentalist', '0.1.1') do |p|
+  Echoe.new('documentalist', '0.1.2') do |p|
     p.description     = "The smooth document management experience, usable as a Rails gem plugin or standalone in any ruby application"
     p.url             = "http://github.com/davout/documentalist"
     p.author          = "David FRANCOIS"
