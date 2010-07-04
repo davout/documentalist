@@ -54,7 +54,7 @@ module Documentalist
   def self.convert(file=nil, options={})
     if options[:input] and options[:input_format] and file.nil?
       file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
-      File.open(file) { |f| f.write(options[:input]) }
+      File.open(file, 'w') { |f| f.write(options[:input]) }
     end
 
     raise Documentalist::Error.new("#{file} does not exist !") unless File.exist?(file)
