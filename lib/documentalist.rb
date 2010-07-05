@@ -75,6 +75,8 @@ module Documentalist
     backend = backend_for_conversion(options[:from_format], options[:to_format])
     backend.convert(file, options)
 
+    # TODO : that would fails removing the file since the input parameter gets overridden
+    # we'll live with it for now
     if options[:input] and options[:input_format] and file.nil?
       FileUtils.rm(file)
     end
