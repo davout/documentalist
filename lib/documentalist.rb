@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'yaml'
-require 'system_timer'
+#require 'system_timer'
 require 'logger'
 require 'kconv'
 require File.join(File.dirname(__FILE__),'dependencies')
