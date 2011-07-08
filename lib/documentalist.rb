@@ -50,6 +50,7 @@ module Documentalist
     end.to_a.first
   end
 
+  # todo : too much conflicting options
   # Takes all conversion requests and dispatches them appropriately
   # Accepts a file path as first argument followed by a hash and an optional block
   # * _input_ : a stream content
@@ -58,7 +59,6 @@ module Documentalist
   # * _to_ : expected location of the ouput file, passed to the block given as last argument
   # * _stream_ : output data format, streamed data are passed to the block given as last argument
   # * _from_format_ : ??
-  #
   def self.convert(file=nil, options={})
     if options[:input] and options[:input_format] and file.nil?
       file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
@@ -78,7 +78,7 @@ module Documentalist
       raise Documentalist::Error.new("No destination, format, or stream format was given")
     end
 
-    options[:from_format] = File.extname(file).gsub(/\./, "").to_sym
+    options[:from_format] ||= File.extname(file).gsub(/\./, "").to_sym
 
     backend = backend_for_conversion(options[:from_format], options[:to_format])
     backend.convert(file, options)
