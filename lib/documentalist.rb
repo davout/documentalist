@@ -51,6 +51,14 @@ module Documentalist
   end
 
   # Takes all conversion requests and dispatches them appropriately
+  # Accepts a file path as first argument followed by a hash and an optional block
+  # * _input_ : a stream content
+  # * _input_format_ :
+  # * _to_format_ : expected format of the ouput file
+  # * _to_ : expected location of the ouput file, passed to the block given as last argument
+  # * _stream_ : output data format, streamed data are passed to the block given as last argument
+  # * _from_format_ : ??
+  #
   def self.convert(file=nil, options={})
     if options[:input] and options[:input_format] and file.nil?
       file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
