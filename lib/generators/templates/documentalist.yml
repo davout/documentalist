@@ -3,6 +3,7 @@
 
 default:
   log_path: log/documentalist.log
+  log_level: WARN
 
   # Python configuration
   python:
@@ -37,6 +38,7 @@ default:
 
 development:
   log_path: log/documentalist-development.log
+  log_level: debug
   python:
     path: /usr/bin/python
   java:
@@ -52,6 +54,8 @@ development:
 
 test:
   log_path: log/documentalist-test.log
+  log_level: debug
+
   python:
     path: /usr/bin/python
 
@@ -69,6 +73,8 @@ test:
 
 production:
   log_path: log/documentalist.log
+  log_level: error
+
   python:
     path: /usr/bin/python
 

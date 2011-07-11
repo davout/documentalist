@@ -28,8 +28,8 @@ module Documentalist
           command = "#{Documentalist.config[:python][:path]} #{File.join(File.dirname(__FILE__), %w{open_office bridges pyodconverter.py})} #{origin} #{options[:to]}"
         end
 
-        if Documentalist.config[:log_file] and !Documentalist.config[:log_file].empty?
-          command += " >> #{Documentalist.config[:log_file]} 2>&1"
+        if Documentalist.config[:log_path] and !Documentalist.config[:log_path].empty?
+          command += " >> #{Documentalist.config[:log_path]} 2>&1"
         end
 
         Documentalist.logger.debug("Going to run #{Documentalist.config[:open_office][:bridge]} bridge with command -- #{command}")
@@ -66,13 +66,11 @@ module Documentalist
       def self.start!
         Documentalist.logger.debug("Starting OpenOffice instance...")
         raise "Already running!" if running?
-
         command_line = "#{Documentalist.config[:open_office][:path]} -headless -accept=\"socket,host=127.0.0.1,port=8100\;urp\;\" -nofirststartwizard -nologo -nocrashreport -norestore -nolockcheck -nodefault"
-        command_line << " >> #{Documentalist.config[:log_file]} 2>&1"
+        command_line << " >> #{Documentalist.config[:log_path]} 2>&1"
         command_line << " &"
-
         system(command_line)
-        
+
         begin
           Documentalist.timeout(Documentalist.config[:open_office][:max_startup_time]) do
             while !running?

@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class WkHtmlToPdfTest < Test::Unit::TestCase
+
   def test_right_backend_is_picked
     assert_equal Documentalist.backend_for_conversion("test.html", "test.pdf"),
       Documentalist::WkHtmlToPdf,

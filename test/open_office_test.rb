@@ -4,6 +4,7 @@ class OpenOfficeTest < Test::Unit::TestCase
   @@oo_server = Documentalist::OpenOffice::Server
 
   def setup
+
     # Make our test reproductible
     @@oo_server.kill! if @@oo_server.running?
   end
@@ -33,7 +34,7 @@ class OpenOfficeTest < Test::Unit::TestCase
   end
 
   def test_open_office_converts_with_just_a_format
-    Documentalist.config[:open_office][:bridge] = "PYOD"
+    Documentalist.config[:open_office][:bridge] = "JOD"
 
     destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
 

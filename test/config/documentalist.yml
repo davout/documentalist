@@ -1,0 +1,34 @@
+#gem test log path
+log_path: documentalist.log
+log_level: debug
+
+# Python configuration
+python:
+  path: /usr/bin/python
+
+# Java configuration
+java:
+  path: /usr/bin/java
+
+# OpenOffice configuration
+open_office:
+  # Path to the OpenOpffice binary
+  path: /Applications/OpenOffice.org.app/Contents/MacOS/soffice
+
+  # Select desired bridge between PYOD and JOD
+  bridge: JOD
+
+  # Maximum allowed CPU usage before the process is considered stalled
+  max_cpu: 80
+
+  # OpenOffice server allowed startup time (seconds)
+  max_startup_time: 4
+
+  # OpenOffice server allowed waking up time (between startup and actual processing)
+  wakeup_time: 3
+
+  # Conversion tries before giving up
+  max_conversion_attempts: 3
+
+  # Maximum allowed time for converting a document
+  max_conversion_time: 6

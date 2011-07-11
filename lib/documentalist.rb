@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'yaml'
-#require 'system_timer'
+require 'system_timer'
 require 'logger'
 require 'kconv'
 
@@ -166,6 +166,7 @@ module Documentalist
       Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
         require backend
       end
+
       self
     end
 
