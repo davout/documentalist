@@ -10,8 +10,6 @@ Debugger.settings[:autoeval] = true
 
 
 module Documentalist
-  @@config = {}
-  @@logger = nil
 
   BACKENDS = {
     # Find a better pattern to pick backend, this one smells pretty bad
@@ -137,23 +135,10 @@ module Documentalist
   end
 
   module Config
-    def config
-      default_config! unless config?
-      @@config
-    end
-
-    def config=(hash)
-      # We want to symbolize keys ourselves since we're not depending on Active Support
-      @@config = symbolize hash
-    end
-
-    def config?
-      @@config != {}
-    end
-
-    def load_config!(rails_env)
-      self.config = YAML::load_file(File.join(::Rails.root, %w{config documentalist.yml}))
-      self.config = config[rails_env.to_sym]
+    def self.extended(base)
+      class << base
+        attr_accessor :config, :logger
+      end
     end
 
     # Returns a new hash with recursively symbolized keys
@@ -164,15 +149,24 @@ module Documentalist
       end
     end
 
-    # Returns the logger object used to log documentalist operations
-    def logger
-      unless @@logger
-        Documentalist.config[:log_file] ||= File.join(::Rails.root, %w{log documentalist.log})
-        @@logger = Logger.new(Documentalist.config[:log_file])
-        @@logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
-      end
+    def load_config!(load_path, env = nil )
+      self.config = symbolize YAML::load_file(load_path)
+      self.config = config[:default].update(self.config[env.to_sym]) if config[:default] and env
+      self.config
+    end
 
-      @@logger
+    def init(application_path, config_path, env = nil)
+
+      load_config!(config_path, env)
+
+      @logger = Logger.new(File.join(application_path, config[:log_path]))
+      @logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
+
+      # Require all backends
+      Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
+        require backend
+      end
+      self
     end
 
   end

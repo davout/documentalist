@@ -9,11 +9,9 @@ module Documentalist
       load "tasks/documentalist.rake"
     end
 
-    config.after_initialize do
-      Documentalist.load_config!(::Rails.env)
-      # Require all backends
-      Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
-        require backend
+    config.before_initialize do
+      if File.exist? ::Rails.root.join('config/documentalist.yml')
+        Documentalist.init(::Rails.root, 'config/documentalist.yml', ::Rails.env)
       end
     end
 

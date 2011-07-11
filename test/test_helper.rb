@@ -1,7 +1,18 @@
 require 'rubygems'
+
+require 'ruby-debug'
+Debugger.start
+Debugger.settings[:autoeval] = true
+
 require 'test/unit'
 require 'flexmock/test_unit'
-require 'documentalist'
+
+require File.expand_path File.dirname(__FILE__) + '/../lib/documentalist'
+
+Documentalist.init(File.dirname(__FILE__), File.join(File.dirname(__FILE__), 'config/documentalist.yml'))
+
+
+
 
 def fixture_001
   File.join(File.dirname(__FILE__), "fixtures/fixture_001.odt")

@@ -3,7 +3,7 @@ module Documentalist
     extend Documentalist::Dependencies
 
     depends_on_binaries! "ps" => "use Documentalist in a Posix compliant OS",
-      Documentalist.config[:open_office][:path] => "install Open Office and correctly configure the path to its binary",
+      Documentalist.config[:open_office][:path] || 'open-office' => "install Open Office and correctly configure the path to its binary",
       "pkill" => "install pkill binary and make it available through the PATH",
       "pgrep" => "install pgrep binary and make it available through the PATH",
       "java" => "install java",
