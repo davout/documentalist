@@ -125,11 +125,11 @@ module Documentalist
         SystemTimer.timeout time_limit do
           yield
         end
-      rescue Timeout::Error
+      rescue Timeout::Error => exc
         attempts -= 1
         sleep(options[:sleep]) if options[:sleep]
         retry unless attempts.zero?
-        raise
+        raise(exc)
       end
     end
   end
