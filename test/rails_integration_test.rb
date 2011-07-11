@@ -19,7 +19,7 @@ class RailsIntegrationTest < Test::Unit::TestCase
     Object.const_set :RAILS_ENV, "development"
 
     # Initialize in fake Rails context
-    require File.join(File.dirname(__FILE__), %w{.. rails init})
+    require File.join(File.dirname(__FILE__), %w{.. rails install})
 
     # Check that the configuration got loaded up properly
     assert_equal Documentalist.config[:python][:path], '/usr/bin/python'

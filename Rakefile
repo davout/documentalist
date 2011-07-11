@@ -17,12 +17,4 @@ if Object.const_defined? :Echoe
   end
 end
 
-namespace :documentalist do
-  namespace :backends do
-    desc "Checks that the required dependencies are met for the different backends"
-    task :checks do
-      require File.join(File.dirname(__FILE__), "init")
-      Documentalist.check_dependencies
-    end
-  end
-end
+

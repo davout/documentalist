@@ -1,6 +1,6 @@
 module Documentalist
   module WkHtmlToPdf
-    include Documentalist::Dependencies
+    extend Documentalist::Dependencies
 
     depends_on_binaries! "wkhtmltopdf" => "install wkhtmltopdf package"
 

@@ -1,6 +1,6 @@
 module Documentalist
   module OpenOffice
-    include Documentalist::Dependencies
+    extend Documentalist::Dependencies
 
     depends_on_binaries! "ps" => "use Documentalist in a Posix compliant OS",
       Documentalist.config[:open_office][:path] => "install Open Office and correctly configure the path to its binary",

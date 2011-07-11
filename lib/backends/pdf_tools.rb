@@ -1,6 +1,6 @@
 module Documentalist
   module PdfTools
-    include Documentalist::Dependencies
+    extend Documentalist::Dependencies
 
     depends_on_binaries! "pdftotext" => "install pdftools package"
 

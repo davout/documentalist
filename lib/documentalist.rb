@@ -3,34 +3,15 @@ require 'yaml'
 #require 'system_timer'
 require 'logger'
 require 'kconv'
-require File.join(File.dirname(__FILE__),'dependencies')
+
+require 'ruby-debug'
+Debugger.start
+Debugger.settings[:autoeval] = true
+
 
 module Documentalist
   @@config = {}
   @@logger = nil
-
-  def self.config
-    default_config! unless config?
-    @@config
-  end
-
-  def self.config=(hash)
-    # We want to symbolize keys ourselves since we're not depending on Active Support
-    @@config = symbolize hash
-  end
-
-  def self.config?
-    @@config != {}
-  end
-
-  def self.default_config!
-    config_from_yaml! File.join(File.dirname(__FILE__), %w{.. config default.yml})
-  end
-
-  def self.config_from_yaml!(file, options = {})
-    self.config = YAML::load(File.open(file))
-    self.config = config[options[:section].to_sym] if options[:section]
-  end
 
   BACKENDS = {
     # Find a better pattern to pick backend, this one smells pretty bad
@@ -155,43 +136,66 @@ module Documentalist
     end
   end
 
-  # Returns the logger object used to log documentalist operations
-  def self.logger
-    unless @@logger
-      Documentalist.config[:log_file] ||= File.join(File.dirname(File.expand_path(__FILE__)), %w{.. documentalist.log})
-      @@logger = Logger.new(Documentalist.config[:log_file])
-      @@logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
+  module Config
+    def config
+      default_config! unless config?
+      @@config
     end
 
-    @@logger
-  end
+    def config=(hash)
+      # We want to symbolize keys ourselves since we're not depending on Active Support
+      @@config = symbolize hash
+    end
 
-  # Checks the dependencies for backends
-  def self.check_dependencies
-    puts "Checking backends system dependencies"
+    def config?
+      @@config != {}
+    end
 
-    Documentalist.constants.each do |backend|
-      backend = Documentalist.const_get backend.to_sym
+    def load_config!(rails_env)
+      self.config = YAML::load_file(File.join(::Rails.root, %w{config documentalist.yml}))
+      self.config = config[rails_env.to_sym]
+    end
 
-      if backend.respond_to? :check_dependencies
-        puts "Checking dependencies for #{backend.to_s}"
-        backend.send :check_dependencies
+    # Returns a new hash with recursively symbolized keys
+    def symbolize(hash)
+      hash.each_key do |key|
+        hash[key.to_sym] = hash.delete key
+        hash[key.to_sym] = symbolize(hash[key.to_sym]) if hash[key.to_sym].is_a?(Hash)
       end
     end
+
+    # Returns the logger object used to log documentalist operations
+    def logger
+      unless @@logger
+        Documentalist.config[:log_file] ||= File.join(::Rails.root, %w{log documentalist.log})
+        @@logger = Logger.new(Documentalist.config[:log_file])
+        @@logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")
+      end
+
+      @@logger
+    end
+
   end
 
-  # Returns a new hash with recursively symbolized keys
-  def self.symbolize(hash)
-    hash.each_key do |key|
-      hash[key.to_sym] = hash.delete key
-      hash[key.to_sym] = symbolize(hash[key.to_sym]) if hash[key.to_sym].is_a?(Hash)
+  module Dependencies
+
+    def check_binary_dependency(binary, tip)
+      puts "Checking for presence of #{binary}...  #{`which #{binary}`.empty? ? "Failed, you might want to #{tip}" : "OK"}"
     end
+
+    def check_dependencies
+      @bin_dependencies.each { |k,v| check_binary_dependency(k,v) } if @bin_dependencies
+    end
+
+    def depends_on_binaries!(h)
+      @bin_dependencies = h
+    end
+
   end
+
+  extend Config
 
   class Error < RuntimeError; end
 end
 
-# Require all backends
-Dir.glob(File.join(File.dirname(__FILE__), 'backends', '*.rb')).each do |backend|
-  require backend
-end
+require "railtie" if defined?(Rails)

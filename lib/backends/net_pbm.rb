@@ -1,6 +1,6 @@
 module Documentalist
   module NetPBM
-    include Documentalist::Dependencies
+    extend Documentalist::Dependencies
 
     depends_on_binaries! "ppmtojpeg" => "install netpbm package"
 
