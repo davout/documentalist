@@ -28,7 +28,7 @@ class DocumentalistTest < Test::Unit::TestCase
   # could possibly not work on some long external system calls
   def test_timeout_uses_system_timeout
     flexmock(SystemTimer).should_receive(:timeout).once
-    Documentalist.timeout(0.1) { }
+    Documentalist::OpenOffice.timeout(0.1) { }
   end
 
   # Test that we have a default configuration for Documentalist even if

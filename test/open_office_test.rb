@@ -1,12 +1,22 @@
 require 'test_helper'
 
 class OpenOfficeTest < Test::Unit::TestCase
+
   @@oo_server = Documentalist::OpenOffice::Server
 
   def setup
-
     # Make our test reproductible
     @@oo_server.kill! if @@oo_server.running?
+    @t = Thread.new { Delayed.worker.new.start }
+  end
+
+
+  def test_multiple_access_to_ooo_are_prevented
+    destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
+    Documentalist.convert fixture_001, :to => destination
+    Delayed::Worker.new.work_off
+    assert File.exist?(destination), "Nothing seems to have been converted..."
+
   end
 
   def test_open_office_converts_from_odf_to_pdf_with_jod

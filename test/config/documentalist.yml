@@ -32,3 +32,11 @@ open_office:
 
   # Maximum allowed time for converting a document
   max_conversion_time: 6
+
+
+  max_availability_waiting_time: 4
+
+  availability_check_attempts: 4
+
+
+

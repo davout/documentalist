@@ -5,3 +5,4 @@ Manifest
 *.gem
 *.log
 ./idea
+*.sqlite

@@ -12,7 +12,7 @@ if Object.const_defined? :Echoe
     p.email           = "david.francois@webflows.fr"
     p.ignore_pattern  = ["tmp/*", "script/*"]
     p.test_pattern    = "test/**/*.rb"
-    p.development_dependencies = ['flexmock >=0.8.6']
+    p.development_dependencies = ['sqlite3-ruby', 'delayed_job', 'flexmock >=0.8.6']
     p.runtime_dependencies = ['zip >=2.0.2', 'SystemTimer >=1.2']
   end
 end

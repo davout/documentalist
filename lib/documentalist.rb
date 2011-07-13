@@ -8,7 +8,6 @@ require 'ruby-debug'
 Debugger.start
 Debugger.settings[:autoeval] = true
 
-
 module Documentalist
 
   BACKENDS = {
@@ -113,25 +112,6 @@ module Documentalist
 
     yield(image_files) if block_given?
     image_files
-  end
-
-  # Runs a block with a system-enforced timeout and optionally retry with an
-  # optional sleep between attempts of running the given block.
-  # All times are in seconds.
-  def self.timeout(time_limit = 0, options = {:attempts => 1, :sleep => nil})
-    if block_given?
-      attempts = options[:attempts] || 1
-      begin
-        SystemTimer.timeout time_limit do
-          yield
-        end
-      rescue Timeout::Error => exc
-        attempts -= 1
-        sleep(options[:sleep]) if options[:sleep]
-        retry unless attempts.zero?
-        raise(exc)
-      end
-    end
   end
 
   module Config
