@@ -28,7 +28,7 @@ class DocumentalistTest < Test::Unit::TestCase
   # could possibly not work on some long external system calls
   def test_timeout_uses_system_timeout
     flexmock(SystemTimer).should_receive(:timeout).once
-    Documentalist::OpenOffice.timeout(0.1) { }
+    Documentalist::OpenOffice::Server.timeout(0.1) { }
   end
 
   # Test that we have a default configuration for Documentalist even if
@@ -71,12 +71,15 @@ class DocumentalistTest < Test::Unit::TestCase
   #end
 
   def test_extract_text
+    mock_resque
     assert_match /thing/,
       Documentalist.extract_text(fixture_001),
       "Text was not properly extracted for fixture 001"
   end
 
+
   def test_extract_stream
+    mock_resque
     returned_data = Documentalist.convert(fixture_001, :stream => :txt) do |data|
       assert_match /thing/, data, "Converted data wasn't streamed properly"
     end

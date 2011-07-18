@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'active_record'
 require 'logger'
 gem 'sqlite3-ruby'
 
@@ -11,29 +10,8 @@ Debugger.start
 Debugger.settings[:autoeval] = true
 
 
-ActiveRecord::Base.logger = Logger.new(File.join(File.dirname(__FILE__),'documentalist.log'))
-ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => File.join(File.dirname(__FILE__),'documentalist.sqlite'))
-ActiveRecord::Migration.verbose = false
-ActiveRecord::Base.default_timezone = :utc if Time.zone.nil?
-
-ActiveRecord::Schema.define do
-  create_table :delayed_jobs, :force => true do |table|
-    table.integer  :priority, :default => 0
-    table.integer  :attempts, :default => 0
-    table.text     :handler
-    table.string   :last_error
-    table.datetime :run_at
-    table.datetime :locked_at
-    table.string   :locked_by
-    table.datetime :failed_at
-    table.timestamps
-  end
-end
-
-require 'delayed_job'
-Delayed::Worker.guess_backend
-
 require File.expand_path File.dirname(__FILE__) + '/../lib/documentalist'
+
 Documentalist.init(File.dirname(__FILE__), File.join(File.dirname(__FILE__), 'config/documentalist.yml'))
 
 def fixture_001
@@ -43,6 +21,19 @@ end
 def fixture_002
   File.join(File.dirname(__FILE__), "fixtures/fixture_002.html")
 end
+
+def mock_resque
+  mock = flexmock(Documentalist::OpenOffice::Converter).should_receive(:create).and_return do |options|
+    Documentalist::OpenOffice.convert_without_no_concurent_access(options[:origin], options)
+  end
+
+  mock_2 = flexmock(::Resque::Status).should_receive(:get).and_return do
+    status = ::Resque::Status.new
+    status.status = "completed"
+    status
+  end
+end
+
 
 class Test::Unit::TestCase
   def assert_difference(code, difference = 0, message = nil)

@@ -3,7 +3,9 @@ require 'yaml'
 require 'system_timer'
 require 'logger'
 require 'kconv'
-
+require 'resque'
+require 'resque/job_with_status'
+require 'active_support/core_ext'
 require 'ruby-debug'
 Debugger.start
 Debugger.settings[:autoeval] = true
@@ -173,4 +175,4 @@ module Documentalist
   class Error < RuntimeError; end
 end
 
-require "railtie" if defined?(Rails)
+require File.join(File.dirname(__FILE__),"railtie") if defined?(Rails)

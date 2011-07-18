@@ -1,28 +1,32 @@
 require 'test_helper'
 
 class OpenOfficeTest < Test::Unit::TestCase
-
+  include FlexMock::TestCase
   @@oo_server = Documentalist::OpenOffice::Server
 
   def setup
     # Make our test reproductible
-    @@oo_server.kill! if @@oo_server.running?
-    @t = Thread.new { Delayed.worker.new.start }
+    @@oo_server.ensure_available
   end
 
 
   def test_multiple_access_to_ooo_are_prevented
     destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
+
+    mock_resque
+
     Documentalist.convert fixture_001, :to => destination
-    Delayed::Worker.new.work_off
     assert File.exist?(destination), "Nothing seems to have been converted..."
+
+    FileUtils.rm destination
+    assert !File.exist?(destination), "We didn't clean up our mess!"
 
   end
 
   def test_open_office_converts_from_odf_to_pdf_with_jod
     destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
 
-    Documentalist.convert fixture_001, :to => destination
+    Documentalist::OpenOffice.convert_without_no_concurent_access fixture_001, :to => destination
 
     assert File.exist?(destination), "Nothing seems to have been converted..."
 
@@ -35,7 +39,7 @@ class OpenOfficeTest < Test::Unit::TestCase
 
     destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
 
-    Documentalist.convert fixture_001, :to => destination
+    Documentalist::OpenOffice.convert_without_no_concurent_access fixture_001, :to => destination
 
     assert File.exist?(destination), "Nothing seems to have been converted..."
 
@@ -44,6 +48,7 @@ class OpenOfficeTest < Test::Unit::TestCase
   end
 
   def test_open_office_converts_with_just_a_format
+    mock_resque
     Documentalist.config[:open_office][:bridge] = "JOD"
 
     destination = File.join(Dir.tmpdir, "#{rand(10**9)}.doc")
@@ -68,6 +73,11 @@ class OpenOfficeTest < Test::Unit::TestCase
   end
 
   def test_open_office_should_obey
+    begin
+      @@oo_server.kill!
+    rescue
+    end
+
     assert !@@oo_server.running?, "OpenOffice service is running, it shouldn't be"
 
     @@oo_server.start!
@@ -83,7 +93,7 @@ class OpenOfficeTest < Test::Unit::TestCase
   def test_open_office_should_explode_if_no_destination_given
     assert_raise Documentalist::Error do
       # We want to make sure an exception is raised if no destination is passed
-      Documentalist.convert(__FILE__)
+      Documentalist.convert(__FILE__,{})
     end
   end
 end
