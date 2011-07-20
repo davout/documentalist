@@ -13,3 +13,6 @@ on how to fix it.
 
 = Installation
 Require the gem in your Rails or Ruby application and you should be good to go !
+
+
+resque-web

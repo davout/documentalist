@@ -1,3 +1,6 @@
+require 'documentalist'
+require 'rails'
+
 module Documentalist
   class Railtie < ::Rails::Railtie
 

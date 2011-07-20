@@ -2,7 +2,9 @@ pkg
 doc
 Manifest
 .specification
-*.gem
 *.log
 ./idea
 *.sqlite
+.bundle
+Gemfile.lock
+*.gem
