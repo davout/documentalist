@@ -5,8 +5,8 @@ module Documentalist
     depends_on_binaries! "pdftotext" => "install pdftools package"
 
     def self.convert(origin, options)
-      if system("pdftotext #{origin} #{options[:destination]} > /dev/null 2>&1")
-        options[:destination]
+      if system("pdftotext #{origin} #{options[:to]} > #{Documentalist.config[:log_path]} 2>&1")
+        options[:to]
       else
         raise Documentalist::Error.new("PdfTools failed")
       end
