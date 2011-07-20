@@ -6,9 +6,7 @@ require 'kconv'
 require 'resque'
 require 'resque/job_with_status'
 require 'active_support/core_ext'
-require 'ruby-debug'
-Debugger.start
-Debugger.settings[:autoeval] = true
+
 
 module Documentalist
 
@@ -40,44 +38,74 @@ module Documentalist
   # * _stream_ : output data format, streamed data are passed to the block given as last argument
   # * _from_format_ : ??
   def self.convert(file=nil, options={})
-    if options[:input] and options[:input_format] and file.nil?
-      file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
-      File.open(file, 'w') { |f| f.write(options[:input]) }
+
+    if not File.exist?(file)
+      raise Documentalist::Error.new("#{file} does not exist !")
     end
 
-    raise Documentalist::Error.new("#{file} does not exist !") unless File.exist?(file)
-
-    if options[:to_format]
-      options[:to] = file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
-    elsif options[:to]
-      options[:to_format] = File.extname(options[:to]).gsub(/\./, "").to_sym
-    elsif options[:stream]
+    if options[:stream]
       options[:to_format] = options[:stream]
       options[:to] = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:to_format]}")
-    else
+    end
+
+    options[:to_format] ||= File.extname(options[:to]).gsub(/\./, "")
+    options[:from_format] ||= File.extname(file).gsub(/\./, "")
+    options[:to] ||= file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
+
+    if [:to_format, :from_format, :to].any?{|key| options[key].nil? }
       raise Documentalist::Error.new("No destination, format, or stream format was given")
     end
 
-    options[:from_format] ||= File.extname(file).gsub(/\./, "").to_sym
+    backend = backend_for_conversion(options[:from_format].to_sym, options[:to_format].to_sym)
 
-    backend = backend_for_conversion(options[:from_format], options[:to_format])
     backend.convert(file, options)
-
-    # TODO : that would fails removing the file since the input parameter gets overridden
-    # we'll live with it for now
-    if options[:input] and options[:input_format] and file.nil?
-      FileUtils.rm(file)
-    end
 
     if options[:stream]
       data = File.read(options[:to])
       FileUtils.rm(options[:to])
-      yield(data) if block_given?
-      data
+      block_given? ? yield(data) : data
     else
-      yield(options[:to]) if block_given?
-      options[:to]
+      block_given? ? yield(options[:to]) : options[:to]
     end
+
+    #if options[:input] and options[:input_format] and file.nil?
+    #  file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
+    #  File.open(file, 'w') { |f| f.write(options[:input]) }
+    #end
+    #
+    #raise Documentalist::Error.new("#{file} does not exist !") unless File.exist?(file)
+    #
+    #if options[:to_format]
+    #  options[:to] = file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
+    #elsif options[:to]
+    #  options[:to_format] = File.extname(options[:to]).gsub(/\./, "").to_sym
+    #elsif options[:stream]
+    #  options[:to_format] = options[:stream]
+    #  options[:to] = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:to_format]}")
+    #else
+    #  raise Documentalist::Error.new("No destination, format, or stream format was given")
+    #end
+    #
+    #options[:from_format] ||= File.extname(file).gsub(/\./, "").to_sym
+    #
+    #backend = backend_for_conversion(options[:from_format], options[:to_format])
+    #backend.convert(file, options)
+    #
+    ## TODO : that would fails removing the file since the input parameter gets overridden
+    ## we'll live with it for now
+    #if options[:input] and options[:input_format] and file.nil?
+    #  FileUtils.rm(file)
+    #end
+    #
+    #if options[:stream]
+    #  data = File.read(options[:to])
+    #  FileUtils.rm(options[:to])
+    #  yield(data) if block_given?
+    #  data
+    #else
+    #  yield(options[:to]) if block_given?
+    #  options[:to]
+    #end
   end
 
   def self.extract_text(file)
@@ -86,8 +114,7 @@ module Documentalist
     if converted and File.exist?(converted)
       text = Kconv.toutf8(File.open(converted).read)
       FileUtils.rm(converted)
-      yield(text) if block_given?
-      text
+      block_given? ? yield(text) : text
     end
   end
 
@@ -104,7 +131,7 @@ module Documentalist
 
       Dir.glob(File.join(temp_dir, "*.ppm")).each do |ppm_image|
         #raise ppm_image
-        Documentalist.convert(ppm_image, :to_format => :jpeg)
+        Documentalist.convert(ppm_image, :to_format => :jpg)
       end
     else
       Documentalist.convert file, :to_format => :html
@@ -112,8 +139,7 @@ module Documentalist
 
     image_files = Dir.glob(File.join(temp_dir, "*.{jpg,jpeg,bmp,tif,tiff,gif,png}"))
 
-    yield(image_files) if block_given?
-    image_files
+    block_given? ? yield(image_files) : image_files
   end
 
   module Config
