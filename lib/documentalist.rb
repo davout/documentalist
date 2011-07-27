@@ -127,7 +127,7 @@ module Documentalist
       FileUtils.mkdir_p temp_dir
       FileUtils.cp file, temp_file
       
-      system "pdfimages #{temp_file} '#{File.join(temp_dir, "img")}'"
+      system "pdfimages #{temp_file} '#{File.join(temp_dir, "img")}' > #{Documentalist.config[:log_path]} 2>&1"
 
       Dir.glob(File.join(temp_dir, "*.ppm")).each do |ppm_image|
         #raise ppm_image
