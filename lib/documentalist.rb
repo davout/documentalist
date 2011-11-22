@@ -165,7 +165,7 @@ module Documentalist
 
     def init(application_path, config_path, env = nil)
 
-      load_config!(config_path, env)
+      load_config!(File.join(application_path,config_path), env)
 
       @logger = Logger.new(File.join(application_path, config[:log_path]))
       @logger.level = Logger.const_get(config[:log_level] ? config[:log_level].upcase : "WARN")

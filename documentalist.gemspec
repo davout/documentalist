@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   #s.require_paths = ["lib"]
 
-  #s.add_dependency('active_support', '>= 1.0.5')
+  #s.add_dependency('active_support', )
   s.add_dependency("zip", ">= 2.0.2")
   s.add_dependency("resque", ">= 1.15.0")
   s.add_dependency("resque-status", ">= 0.2.3")
