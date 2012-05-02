@@ -1,10 +1,9 @@
 require 'rubygems'
+require 'resque'
+require 'resque-status'
 require 'yaml'
-require 'system_timer'
 require 'logger'
 require 'kconv'
-require 'resque'
-require 'resque/job_with_status'
 require 'active_support/core_ext'
 
 
@@ -68,44 +67,6 @@ module Documentalist
       block_given? ? yield(options[:to]) : options[:to]
     end
 
-    #if options[:input] and options[:input_format] and file.nil?
-    #  file = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:input_format].to_s}")
-    #  File.open(file, 'w') { |f| f.write(options[:input]) }
-    #end
-    #
-    #raise Documentalist::Error.new("#{file} does not exist !") unless File.exist?(file)
-    #
-    #if options[:to_format]
-    #  options[:to] = file.gsub(/#{"\\" + File.extname(file)}$/, ".#{options[:to_format].to_s}")
-    #elsif options[:to]
-    #  options[:to_format] = File.extname(options[:to]).gsub(/\./, "").to_sym
-    #elsif options[:stream]
-    #  options[:to_format] = options[:stream]
-    #  options[:to] = File.join(Dir.tmpdir, "#{rand(10**9)}.#{options[:to_format]}")
-    #else
-    #  raise Documentalist::Error.new("No destination, format, or stream format was given")
-    #end
-    #
-    #options[:from_format] ||= File.extname(file).gsub(/\./, "").to_sym
-    #
-    #backend = backend_for_conversion(options[:from_format], options[:to_format])
-    #backend.convert(file, options)
-    #
-    ## TODO : that would fails removing the file since the input parameter gets overridden
-    ## we'll live with it for now
-    #if options[:input] and options[:input_format] and file.nil?
-    #  FileUtils.rm(file)
-    #end
-    #
-    #if options[:stream]
-    #  data = File.read(options[:to])
-    #  FileUtils.rm(options[:to])
-    #  yield(data) if block_given?
-    #  data
-    #else
-    #  yield(options[:to]) if block_given?
-    #  options[:to]
-    #end
   end
 
   def self.extract_text(file)
@@ -158,7 +119,7 @@ module Documentalist
     end
 
     def load_config!(load_path, env = nil )
-      self.config = symbolize YAML::load_file(load_path)
+      self.config = YAML::load_file(load_path).with_indifferent_access
       self.config = config[:default].update(self.config[env.to_sym]) if config[:default] and env
       self.config
     end

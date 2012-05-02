@@ -52,7 +52,7 @@ module Documentalist
 
     def self.convert_with_no_concurent_access(origin, options)
       converter_id = Converter.create(options.update(:origin => origin))
-      while not ['failed', 'completed'].include?(::Resque::Status.get(converter_id).status)
+      while not ['failed', 'completed'].include?(::Resque::Plugins::Status::Hash.get(converter_id).status)
         sleep(1)
       end
       options[:to]
@@ -62,7 +62,7 @@ module Documentalist
       alias_method_chain :convert, :no_concurent_access
     end
 
-    class Converter < Resque::JobWithStatus
+    class Converter < ::Resque::JobWithStatus
       @queue = :open_office
 
       def perform
@@ -80,7 +80,7 @@ module Documentalist
         if block_given?
           attempts = options[:attempts] || 1
           begin
-            SystemTimer.timeout time_limit do
+            Timeout::timeout time_limit do
               yield
             end
           rescue Timeout::Error => exc

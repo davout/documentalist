@@ -22,9 +22,8 @@ Gem::Specification.new do |s|
 
   #s.add_dependency('active_support', )
   s.add_dependency("zip", ">= 2.0.2")
-  s.add_dependency("resque", ">= 1.15.0")
-  s.add_dependency("resque-status", ">= 0.2.3")
-  s.add_dependency("SystemTimer", ">= 1.2")
+  s.add_dependency("resque-status")
+  s.add_development_dependency("pry")
   s.add_development_dependency("sqlite3-ruby", ">= 0")
   s.add_development_dependency("flexmock", ">= 0.8.6")
 end
