@@ -4,19 +4,8 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="SystemTimer (v1.2.3, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="resque-status (v0.2.3, /Users/nicolas/Sites/tests/resq/vendor/gems/resque-status) [path][gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="sinatra (v1.2.6, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="resque (v1.17.1, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="zip (v2.0.2, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="json (v1.5.3, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="tilt (v1.3.2, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="vegas (v0.1.8, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="redis (v2.2.1, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rack (v1.0.1, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.0.15, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="redis-namespace (v1.0.3, RVM: ruby-1.8.7-p174) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rack (v1.2.3, RVM: ruby-1.8.7-p174) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.1.4, RVM: ruby-1.8.7-p370) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="flexmock (v0.9.0, RVM: ruby-1.8.7-p370) [gem]" level="application" />
   </component>
 </module>
 

@@ -1,4 +1,5 @@
-require 'test_helper'
+#require File.join(File.dirname(__FILE__),'test_helper.rb')
+require "test_helper"
 require 'tmpdir'
 
 class DocumentalistTest < Test::Unit::TestCase

@@ -135,7 +135,7 @@ module Documentalist
         begin
           timeout(3) do
             while(running?)
-              system("pkill -9 office")
+              system("pkill -9 soffice")
             end
           end
         rescue Timeout::Error
